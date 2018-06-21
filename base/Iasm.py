@@ -4,6 +4,11 @@ from error import error, check_assert
 
 import abc
 
+'''
+	Assembly interface
+	__init__ : nothing
+	dispatch : support call specific assembly
+'''
 class IAsm(object):
 	__metaclass__ = abc.ABCMeta
 

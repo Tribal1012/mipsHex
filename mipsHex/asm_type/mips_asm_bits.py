@@ -6,10 +6,12 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 from mips_asm import *
 
+# instruction(bits operation)
 class MIPS_Asm_Bits(MIPS_Asm):
 	def __init__(self, addr):
 		super(MIPS_Asm_Bits, self).__init__(addr)
 
+	# andi instruction
 	def do_andi(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != andi".format(hex(self.addr), self.ins), self.ins == 'andi')
 
@@ -27,6 +29,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		return None, None
 
+	# or instruction
 	def do_or(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != or".format(hex(self.addr), self.ins), self.ins == 'or')
 
@@ -44,6 +47,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		return None, None
 
+	# srl shift instruction
 	def do_srl(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != srl".format(hex(self.addr), self.ins), self.ins == 'srl')
 
@@ -56,6 +60,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		return None, None
 
+	# sra shift instruction
 	def do_sra(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != sra".format(hex(self.addr), self.ins), self.ins == 'sra')
 
@@ -68,6 +73,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		return None, None
 
+	# sll shift instruction
 	def do_sll(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != sll".format(hex(self.addr), self.ins), self.ins == 'sll')
 

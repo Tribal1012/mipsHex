@@ -6,10 +6,12 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 from mips_asm import *
 
+# instruction(store to memory)
 class MIPS_Asm_Store(MIPS_Asm):
 	def __init__(self, addr):
 		super(MIPS_Asm_Store, self).__init__(addr)
 
+	# sw instruction
 	def do_sw(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != sw".format(hex(self.addr), self.ins), self.ins == 'sw')
 
@@ -24,6 +26,7 @@ class MIPS_Asm_Store(MIPS_Asm):
 
 		return line, None
 
+	# sh instruction
 	def do_sh(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != sh".format(hex(self.addr), self.ins), self.ins == 'sh')
 

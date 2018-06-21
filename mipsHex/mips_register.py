@@ -6,6 +6,18 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 import base.register as br
 
+'''
+	Store mips register information
+	And provide interfaces about register
+
+	__init__ : define mips register
+	get_register : search a mips register, and return mips register value
+	has_register : check to exist the mips register
+	set_register : search a mips register, and set mips register value
+	get_func_arg : get function arguments list from mips argument registers
+	isargument : Is this register argument register?
+	issaved : Is this register saved register?
+'''
 class MIPS_Register(br.Register):
 	def __init__(self):
 		super(MIPS_Register, self).__init__()
@@ -25,7 +37,7 @@ class MIPS_Register(br.Register):
 
 	def has_register(self, register):
 		for line in self.register_list:
-			for key, valie in line.items():
+			for key, value in line.items():
 				if key == register:
 					return True
 		return False

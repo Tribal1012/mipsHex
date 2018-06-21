@@ -8,6 +8,7 @@ from mips_asm import *
 
 import idc
 
+# instruction(conditional branch)
 class MIPS_Asm_Branch(MIPS_Asm):
 	def __init__(self, addr, dispatch, o_reg, o_func):
 		super(MIPS_Asm_Branch, self).__init__(addr)
@@ -17,6 +18,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		# check_assert("[-] address({0}), dispatch error in branch".format(hex(self.next_addr)), result is None)
 		check_assert("[-] address({0}), dispatch error in branch".format(hex(self.next_addr)), n_addr is None)
 
+	# branch instruction
 	def do_b(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != b".format(hex(self.addr), self.ins), self.ins == 'b')
 
@@ -28,6 +30,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 
 		return line, self.next_addr
 
+	# branch equal zero instruction
 	def do_beqz(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != beqz".format(hex(self.addr), self.ins), self.ins == 'beqz')
 
@@ -41,6 +44,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 
 		return line, self.next_addr
 
+	# branch not equal zero instruction
 	def do_bnez(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bnez".format(hex(self.addr), self.ins), self.ins == 'bnez')
 
@@ -53,7 +57,8 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		line += ') ' + self.opr2.value + ';'
 
 		return line, self.next_addr
-		
+	
+	# branch equal instruction
 	def do_beq(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != beq".format(hex(self.addr), self.ins), self.ins == 'beq')
 
@@ -67,6 +72,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 
 		return line, self.next_addr
 
+	# branch not equal instruction
 	def do_bne(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bne".format(hex(self.addr), self.ins), self.ins == 'bne')
 
@@ -80,6 +86,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 
 		return line, self.next_addr
 
+	# branch less than zero instruction
 	def do_bltz(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bltz".format(hex(self.addr), self.ins), self.ins == 'bltz')
 

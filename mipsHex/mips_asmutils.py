@@ -7,6 +7,14 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import base.asmutils as bau
 import re
 
+'''
+	mips assembly utils about operand
+	__init__ : call super class's __init__
+	convert_to_var : convert from operand to the local variable feature
+	parse_operand : parse operand datas
+
+	global MIPS_AsmUtils object : asmutils
+'''
 class MIPS_AsmUtils(bau.AsmUtils):
 	def __init__(self):
 		super(MIPS_AsmUtils, self).__init__()

@@ -10,6 +10,11 @@ from base.Iasm import *
 
 import idc
 
+'''
+	mips assembly interface
+	__init__ : define a dictionary about mips assembly type
+	dispatch : call method based on specific mips assembly type
+'''
 class MIPS_IAsm(IAsm):
 	def __init__(self):
 		super(MIPS_IAsm, self).__init__()

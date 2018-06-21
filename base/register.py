@@ -2,6 +2,10 @@
 
 from abc import *
 
+'''
+	Store register information
+	And provide interfaces about register
+'''
 class Register(object):
 	__metaclass__ = ABCMeta
 

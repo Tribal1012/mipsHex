@@ -6,13 +6,12 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 from mips_asm import *
 
+# instruction(arthmetic operation)
 class MIPS_Asm_Arithmetic(MIPS_Asm):
 	def __init__(self, addr):
 		super(MIPS_Asm_Arithmetic, self).__init__(addr)
 
-		# self.mips_asm_arithmetic = ['addiu', 'subu']
-		pass
-
+	# addiu instruction
 	def do_addiu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != addiu".format(hex(self.addr), self.ins), self.ins == 'addiu')
 
@@ -29,6 +28,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 
 		return None, None
 
+	# addu instruction
 	def do_addu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != addu".format(hex(self.addr), self.ins), self.ins == 'addu')
 
@@ -42,6 +42,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 
 		return None, None
 
+	# subu instruction
 	def do_subu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != subu".format(hex(self.addr), self.ins), self.ins == 'subu')
 

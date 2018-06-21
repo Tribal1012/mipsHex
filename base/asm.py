@@ -4,6 +4,10 @@ import idc
 
 from error import error, check_assert
 
+'''
+	assembly type
+	number is defined in IDA
+'''
 asm_type = {
 	'Bad_Opnd':-1,
 	'None':0,
@@ -45,6 +49,13 @@ asm_type = {
 	'Z80_Condition':8
 }
 
+'''
+	Only store Operand information
+
+	__init__ : Initialize operand information
+	type : return operand type
+	value : return operand value
+'''
 class Operand(object):
 	def __init__(self, type, value):
 		self._type = type
@@ -58,6 +69,11 @@ class Operand(object):
 	def value(self):
 		return self._value
 
+'''
+	Store assembly information from address using idapython
+
+	__init__ : Initialize assembly information using idapython
+'''
 class Asm(object):
 	def __init__(self, addr):
 		self.addr = addr
