@@ -32,8 +32,12 @@ class MIPS_Register(br.Register):
 		for line in self.register_list:
 			for key, valie in line.items():
 				if key == register:
-					return line[key]
-		return None
+					if line[key]:
+						return line[key]
+					else:
+						return register
+						
+		return register
 
 	def has_register(self, register):
 		for line in self.register_list:

@@ -79,7 +79,7 @@ def hex_ray_mips():
 						print "[-] Not found total_stack_size!"
 				elif reg.issaved(opr1):
 					try:
-						var_name = asmutils.convert_to_var(opr2)
+						var_name = asmutils.convert_operand(opr2)
 						func.set_local_var(var_name, opr1)
 					except:
 						print "[-] Not found total_stack_size!!"

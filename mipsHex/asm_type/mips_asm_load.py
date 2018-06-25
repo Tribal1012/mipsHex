@@ -11,18 +11,18 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def __init__(self, addr):
 		super(MIPS_Asm_Load, self).__init__(addr)
 
-	# load word instruction
-	def do_lw(self, o_reg, o_func):
-		check_assert("[-] Check ins, current({0}) : {1} != lw".format(hex(self.addr), self.ins), self.ins == 'lw')
+	# lbu instruction 
+	def do_lbu(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != lbu".format(hex(self.addr), self.ins), self.ins == 'lbu')
 
-		var_name = asmutils.convert_to_var(self.opr2.value, o_reg)
+		var_name = asmutils.convert_operand(self.opr2.value, o_reg)
 
 		if o_func.get_local_var(var_name) is not None:
 			var = o_func.get_local_var(var_name)
 		else:
 			var = var_name
 
-		o_reg.set_register(self.opr1.value, var)
+		o_reg.set_register(self.opr1.value, '((uint8_t)' + var + ')')
 
 		return None, None
 
@@ -30,7 +30,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_lhu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lhu".format(hex(self.addr), self.ins), self.ins == 'lhu')
 
-		var_name = asmutils.convert_to_var(self.opr2.value, o_reg)
+		var_name = asmutils.convert_operand(self.opr2.value, o_reg)
 
 		if o_func.get_local_var(var_name) is not None:
 			var = o_func.get_local_var(var_name)
@@ -38,6 +38,21 @@ class MIPS_Asm_Load(MIPS_Asm):
 			var = var_name
 
 		o_reg.set_register(self.opr1.value, '((uint16_t)' + var + ')')
+
+		return None, None
+
+	# load word instruction
+	def do_lw(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != lw".format(hex(self.addr), self.ins), self.ins == 'lw')
+
+		var_name = asmutils.convert_operand(self.opr2.value, o_reg)
+
+		if o_func.get_local_var(var_name) is not None:
+			var = o_func.get_local_var(var_name)
+		else:
+			var = var_name
+
+		o_reg.set_register(self.opr1.value, var)
 
 		return None, None
 

@@ -7,11 +7,15 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import base.asmutils as bau
 import re
 
+import idc
+
 '''
 	mips assembly utils about operand
 	__init__ : call super class's __init__
-	convert_to_var : convert from operand to the local variable feature
+	convert_operand : convert from operand to the local variable feature
 	parse_operand : parse operand datas
+	have_string : check variable which have string
+	get_string : call have_string, then if valiable have string, return refered string by valiable
 
 	global MIPS_AsmUtils object : asmutils
 '''
@@ -20,7 +24,7 @@ class MIPS_AsmUtils(bau.AsmUtils):
 		super(MIPS_AsmUtils, self).__init__()
 		pass
 
-	def convert_to_var(self, operand, o_reg=None):
+	def convert_operand(self, operand, o_reg=None):
 		parsed = self.parse_operand(operand)
 
 		if parsed is None:
@@ -28,8 +32,7 @@ class MIPS_AsmUtils(bau.AsmUtils):
 
 		if o_reg and parsed['reg']:
 			reg = o_reg.get_register(parsed['reg'])
-			if reg is None:
-				reg = parsed['reg']
+
 		else:
 			reg = parsed['reg']
 
@@ -42,12 +45,21 @@ class MIPS_AsmUtils(bau.AsmUtils):
 					print "[-] check operand : " + operand
 					return operand
 			elif parsed['reg']:
-				if parsed['offset']:
+				if o_reg and parsed['offset']:
 					# syntax e.g) (gidpd_tracefp - 0x7032AC)($s3)
-					return '*({0}+({1} + {2}))'.format(parsed['reg'], parsed['addr'], parsed['offset'])
+					reg_val = idc.LocByName(o_reg.get_register(parsed['reg']))
+					addr_val = idc.LocByName(parsed['addr'])
+
+					return hex(reg_val + addr_val + int(parsed['offset'], 16))[:-1]	# L
+				else:
+					print "[-] please o_reg argument, " + operand
+					return operand
 			else:
 				if parsed['offset']:
 					# syntax e.g) (aSSetToSoftlimi - 0x590000)
+					return hex(idc.LocByName(parsed['addr']) + int(parsed['offset'], 16))[:-1] # L
+				else:
+					print "[-] don't have offset..." + operand
 					return operand
 		else:
 			if parsed['var']:
@@ -77,7 +89,7 @@ class MIPS_AsmUtils(bau.AsmUtils):
 			return self.info
 
 		# syntax e.g) (aSSetToSoftlimi - 0x590000)
-		match = re.match(r"^\(a([0-9a-zA-Z_]+) ([-+]) ([0-9a-fA-Fx]+)\)$", operand)
+		match = re.match(r"^\(([0-9a-zA-Z_]+) ([-+]) ([0-9a-fA-Fx]+)\)$", operand)
 		if match:
 			self.info['sf'] = None
 			self.info['var'] = None
@@ -133,5 +145,41 @@ class MIPS_AsmUtils(bau.AsmUtils):
 		self.info['offset'] = None
 
 		return None
+
+	def have_string(self, operand):
+		if operand[0] != 'a':
+			return False
+
+		loc_addr = idc.LocByName(operand)
+		if idc.GetString(loc_addr) != '':
+			return True
+		else:
+			return False
+
+	def get_string(self, operand):
+		if have_string(operand):
+			return idc.GetString(idc.LocByName(operand))
+
+		return None
+
+	def check_var_naming(self, val):
+		match = re.match(r"^([0-9a-zA-Z]+)$", val)
+		if match:
+			# variable naming rule
+			if val[:2] == '0x':
+				new_val = 'dword_' + val[2:]
+			elif val[0] in '1234567890':
+				new_val = 'ptr_' + val
+			else:
+				new_val = val
+		else:
+			new_val = ''
+			for c in val:
+				if c.isalnum() or c == '_':
+					new_val += c
+
+			new_val = self.check_var_naming(new_val)
+
+		return new_val
 
 asmutils = MIPS_AsmUtils()

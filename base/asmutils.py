@@ -5,7 +5,7 @@ import abc
 '''
 	assembly utils about operand
 	__init__ : parsed operand information
-	convert_to_var : convert from operand to the local variable feature
+	convert_operand : convert from operand to the local variable feature
 	parse_operand : parse operand datas
 '''
 class AsmUtils(object):
@@ -21,7 +21,7 @@ class AsmUtils(object):
 		}
 
 	@abc.abstractmethod
-	def convert_to_var(self, operand):
+	def convert_operand(self, operand):
 		pass
 
 	@abc.abstractmethod

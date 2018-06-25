@@ -16,11 +16,19 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != addiu".format(hex(self.addr), self.ins), self.ins == 'addiu')
 
 		if self.opr2.type == asm_type['Gen_Reg']:
-			if self.opr3.value.find('+') != -1 and self.opr2.value == '$sp':
-				new_opr = asmutils.convert_to_var(self.opr3.value + '(' + self.opr2.value + ')', o_reg)
-				o_reg.set_register(self.opr1.value, new_opr)
+			if self.opr3:
+				if self.opr3.value.find('+') != -1 or self.opr3.value.find('-') != -1: 
+					if self.opr2.value == '$sp':
+						new_opr = asmutils.convert_operand(self.opr3.value + '(' + self.opr2.value + ')', o_reg)
+						o_reg.set_register(self.opr1.value, new_opr)
+					else:
+						reg_val = o_reg.get_register(self.opr2.value)
+						new_opr = asmutils.convert_operand(self.opr3.value)
+						o_reg.set_register(self.opr1.value, hex(idc.LocByName(reg_val) + int(new_opr, 16)))
+				else:
+					error("[-] current({0}), Not defined addiu operand3 type".format(hex(self.addr)))
 			else:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '+' + self.opr3.value + ')')
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + o_reg.get_register(self.opr2.value) + ')')
 		elif self.opr2.type == asm_type['Imm']:
 			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + self.opr2.value + ')')
 		else:
