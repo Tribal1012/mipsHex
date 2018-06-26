@@ -8,7 +8,7 @@ from base.error import *
 import idautils
 import idc
 
-VERSION = 0.0
+VERSION = 0.2
 
 '''
 get reference list in function
@@ -119,9 +119,9 @@ def hex_ray_mips():
 		if n_addr is None:
 			current = idc.NextHead(current, func_addr[1])
 		else:
-			current = n_addr
+			current = idc.NextHead(n_addr, func_addr[1])
 
-	with open("hex_ray.c", "w") as fh:
+	with open(func_name + ".c", "w") as fh:
 		fh.write(func.function(func_contents))
 
 if __name__ == '__main__':

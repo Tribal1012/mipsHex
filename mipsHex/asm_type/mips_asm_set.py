@@ -15,7 +15,14 @@ class MIPS_Asm_Set(MIPS_Asm):
 	def do_sltu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != sltu".format(hex(self.addr), self.ins), self.ins == 'sltu')
 
-		o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '<' + o_reg.get_register(self.opr3.value) + ')? True:False')
+		if self.opr3:
+			check_assert("[-] Check opr3 type, current({0}) : {1} != {2}".format(self.addr, self.opr3.type, asm_type['Imm']), self.opr3.type == asm_type['Imm'])
+
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '<' + o_reg.get_register(self.opr3.value) + ')? True:False')
+		else:
+			check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(self.addr, self.opr2.type, asm_type['Imm']), self.opr2.type == asm_type['Imm'])
+			
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '<' + o_reg.get_register(self.opr2.value) + ')? True:False')
 
 		return None, None
 

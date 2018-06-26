@@ -100,6 +100,20 @@ class MIPS_Asm_Branch(MIPS_Asm):
 
 		return line, self.next_addr
 
+	# branch on greater than zero instruction
+	def do_bgtz(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != bgtz".format(hex(self.addr), self.ins), self.ins == 'bgtz')
+
+		line = ''
+		if self.next_result is not None:
+			line = self.next_result
+			line += '\n    '
+		line += 'if('
+		line += o_reg.get_register(self.opr1.value) + ' > 0'
+		line += ') ' + self.opr2.value + ';'
+
+		return line, self.next_addr
+
 	# branch on greater than or equal to zero instruction
 	def do_bgez(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bgez".format(hex(self.addr), self.ins), self.ins == 'bgez')
@@ -110,6 +124,20 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' >= 0'
+		line += ') ' + self.opr2.value + ';'
+
+		return line, self.next_addr
+
+	# branch on less than or equal to zero instruction
+	def do_blez(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != blez".format(hex(self.addr), self.ins), self.ins == 'blez')
+
+		line = ''
+		if self.next_result is not None:
+			line = self.next_result
+			line += '\n    '
+		line += 'if('
+		line += o_reg.get_register(self.opr1.value) + ' <= 0'
 		line += ') ' + self.opr2.value + ';'
 
 		return line, self.next_addr

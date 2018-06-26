@@ -38,32 +38,32 @@ class MIPS_AsmUtils(bau.AsmUtils):
 
 		if parsed['sf'] is None:
 			if parsed['addr'] is None:
-				if parsed['offset'] and parsed['reg']:
+				if parsed['offset'] and reg:
 					# syntax e.g) 0x3C($a0)
 					return '*({0}+{1})'.format(reg, parsed['offset'])
 				else:
 					print "[-] check operand : " + operand
 					return operand
-			elif parsed['reg']:
+			elif reg:
 				if o_reg and parsed['offset']:
 					# syntax e.g) (gidpd_tracefp - 0x7032AC)($s3)
-					reg_val = idc.LocByName(o_reg.get_register(parsed['reg']))
+					reg_val = idc.LocByName(reg)
 					addr_val = idc.LocByName(parsed['addr'])
 
-					return hex(reg_val + addr_val + int(parsed['offset'], 16))[:-1]	# L
+					return hex(reg_val + addr_val + int(parsed['offset'], 16)).replace('L', '')
 				else:
 					print "[-] please o_reg argument, " + operand
 					return operand
 			else:
 				if parsed['offset']:
 					# syntax e.g) (aSSetToSoftlimi - 0x590000)
-					return hex(idc.LocByName(parsed['addr']) + int(parsed['offset'], 16))[:-1] # L
+					return hex(idc.LocByName(parsed['addr']) + int(parsed['offset'], 16)).replace('L', '')
 				else:
 					print "[-] don't have offset..." + operand
 					return operand
 		else:
 			if parsed['var']:
-				if parsed['reg']:
+				if reg:
 					# syntax e.g) 0x30+var_8($sp)
 					return 'v{0}'.format((int(parsed['var'], 16) - 8) / 4)
 				else:
@@ -135,6 +135,17 @@ class MIPS_AsmUtils(bau.AsmUtils):
 
 			return self.info
 
+		# syntax e.g) 0x3C
+		match = re.match(r"^(-?[0-9a-fA-Fx]+)$", operand)
+		if match:
+			self.info['offset'] = match.group(1)
+			self.info['reg'] = None
+			self.info['sf'] = None
+			self.info['var'] = None
+			self.info['addr'] = None
+
+			return self.info
+
 		print "[-] it's regular expression error in parse_operand"
 		print "    operand : " + operand
 
@@ -151,19 +162,19 @@ class MIPS_AsmUtils(bau.AsmUtils):
 			return False
 
 		loc_addr = idc.LocByName(operand)
-		if idc.GetString(loc_addr) != '':
+		if idc.GetString(loc_addr) != '' and idc.isData(idc.GetFlags(loc_addr)):
 			return True
 		else:
 			return False
 
 	def get_string(self, operand):
-		if have_string(operand):
-			return idc.GetString(idc.LocByName(operand))
+		if self.have_string(operand):
+			return '"' + idc.GetString(idc.LocByName(operand)) + '"'
 
 		return None
 
 	def check_var_naming(self, val):
-		match = re.match(r"^([0-9a-zA-Z]+)$", val)
+		match = re.match(r"^([0-9a-zA-Z_]+)$", val)
 		if match:
 			# variable naming rule
 			if val[:2] == '0x':

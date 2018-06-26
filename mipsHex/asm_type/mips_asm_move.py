@@ -21,3 +21,15 @@ class MIPS_Asm_Move(MIPS_Asm):
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr2.value))
 
 		return None, None
+
+	# move if not zero instruction
+	def do_movn(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != movn".format(hex(self.addr), self.ins), self.ins == 'movn')
+
+		line = o_reg.get_register(self.opr3.value)  + '?'
+		line += o_reg.get_register(self.opr2.value) + ':'
+		line += o_reg.get_register(self.opr1.value)
+
+		o_reg.set_register(self.opr1.value, line)
+
+		return None, None

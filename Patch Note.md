@@ -1,5 +1,17 @@
 # Patch Note
 
+ver 0.2
+
+- addition mips assembly (bgtz, movn, ext, ins, blez)
+
+- support ascii c string
+
+- support variable name
+
+- fix bug (after perform jump or branch, perform one more the next code)
+
+- etc...
+
 ver.0.1
 
 - addition mips assembly (sb, bgez, lbu)

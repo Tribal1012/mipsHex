@@ -16,7 +16,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != andi".format(hex(self.addr), self.ins), self.ins == 'andi')
 
 		if self.opr2.type == asm_type['Gen_Reg']:
-			if self.opr3.type == asm_type['Get_Reg']:
+			if self.opr3.type == asm_type['Gen_Reg']:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '&' + o_reg.get_register(self.opr3.value) + ')')
 			elif self.opr3.type == asm_type['Imm']:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '&' + self.opr3.value + ')')
@@ -34,7 +34,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != or".format(hex(self.addr), self.ins), self.ins == 'or')
 
 		if self.opr2.type == asm_type['Gen_Reg']:
-			if self.opr3.type == asm_type['Get_Reg']:
+			if self.opr3.type == asm_type['Gen_Reg']:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '|' + o_reg.get_register(self.opr3.value) + ')')
 			elif self.opr3.type == asm_type['Imm']:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '|' + self.opr3.value + ')')
