@@ -25,10 +25,13 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 						reg_val = o_reg.get_register(self.opr2.value)
 						new_opr = asmutils.convert_operand(self.opr3.value)
 						o_reg.set_register(self.opr1.value, hex(idc.LocByName(reg_val) + int(new_opr, 16)))
+
+					line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' + ' + self.opr3.value
 				else:
 					error("[-] current({0}), Not defined addiu operand3 type".format(hex(self.addr)))
 			else:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + o_reg.get_register(self.opr2.value) + ')')
+				line = '// ' + self.opr1.value + ' += ' + self.opr2.value
 		elif self.opr2.type == asm_type['Imm']:
 			if self.opr2.value[1:].find('+') != -1 or self.opr2.value[1:].find('-') != -1:
 				parsed = asmutils.parse_operand(self.opr2.value + '(' + self.opr1.value + ')')
@@ -43,10 +46,12 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 					error("[-] current({0}), operand2 parse error".format(hex(self.addr)))
 			else:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + self.opr2.value + ')')
+
+			line = '// ' + self.opr1.value + ' += ' + self.opr2.value
 		else:
 			error("[-] current({0}), Not defined addiu operand type".format(hex(self.addr)))
 
-		return None, None
+		return line, None
 
 	# addu instruction
 	def do_addu(self, o_reg, o_func):
@@ -55,12 +60,16 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		if self.opr2.type == asm_type['Gen_Reg']:
 			if self.opr3:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '+' + self.opr3.value + ')')
+
+				line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' + ' + self.opr3.value
 			else:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + self.opr2.value + ')')
+
+				line = '// ' + self.opr1.value + ' += ' + self.opr2.value
 		else:
 			error("[-] current({0}), Not defined addu operand type".format(hex(self.addr)))
 
-		return None, None
+		return line, None
 
 	# subu instruction
 	def do_subu(self, o_reg, o_func):
@@ -68,9 +77,13 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 
 		if self.opr2.type == asm_type['Gen_Reg']:
 			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '-' + self.opr3.value + ')')
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' - ' + self.opr3.value
 		elif self.opr2.type == asm_type['Imm']:
 			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '-' + self.opr2.value + ')')
+
+			line = '// ' + self.opr1.value + ' -= ' + self.opr2.value
 		else:
 			error("[-] current({0}), Not defined subu operand type".format(hex(self.addr)))
 
-		return None, None
+		return line, None

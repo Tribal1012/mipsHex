@@ -38,9 +38,18 @@ class MIPS_AsmUtils(bau.AsmUtils):
 
 		if parsed['sf'] is None:
 			if parsed['addr'] is None:
-				if parsed['offset'] and reg:
-					# syntax e.g) 0x3C($a0)
-					return '*({0}+{1})'.format(reg, parsed['offset'])
+				if parsed['offset']:
+					if reg:
+						# syntax e.g) 0x3C($a0)
+						return '*({0}+{1})'.format(reg, parsed['offset'])
+					else:
+						try:
+							if reg == parsed['reg']:
+								return '*({0}+{1})'.format(reg, parsed['offset'])
+							else:
+								return hex(int(reg, 16) + int(parsed['offset'], 16)).replace('L', '')
+						except:
+							return '*({0}+{1})'.format(reg, parsed['offset'])
 				else:
 					print "[-] check operand : " + operand
 					return operand
@@ -192,5 +201,26 @@ class MIPS_AsmUtils(bau.AsmUtils):
 			new_val = self.check_var_naming(new_val)
 
 		return new_val
+
+	def check_use_return(self, addr):
+		next_addr = idc.NextHead(addr)
+
+		ins = idc.GetMnem(next_addr)
+		opr1 = idc.GetOpnd(next_addr, 0)
+
+		if ins == 'lw' and opr1 == '$gp':
+			return self.check_use_return(next_addr)
+		
+		opr2 = idc.GetOpnd(next_addr, 1)
+		opr3 = idc.GetOpnd(next_addr, 2)
+		if opr2 == '$v0' or opr3 == '$v0':
+			return True
+		
+		ins_store = ('sb', 'sh', 'sw', 'swl', 'swr', 'ulw', 'usw')
+		if ins not in ins_store and opr1 == '$v0':
+			if opr3 is None or opr3 == '':
+				return True
+		
+		return False
 
 asmutils = MIPS_AsmUtils()

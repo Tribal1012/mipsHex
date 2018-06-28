@@ -65,7 +65,9 @@ class Function(object):
 
 		local_var = ''
 		if len(self.local_var) != 0:
-			for item in self.local_var:
+			local_var_keys = self.local_var.keys()
+			local_var_keys.sort()
+			for item in local_var_keys:
 				local_var += NEXTLINE + TAB
 				local_var += 'uint32_t '	# variable type
 				local_var += item			# variable name

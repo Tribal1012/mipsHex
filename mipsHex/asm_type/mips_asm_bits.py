@@ -22,12 +22,16 @@ class MIPS_Asm_Bits(MIPS_Asm):
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '&' + self.opr3.value + ')')
 			else:
 				error("[-] address({0}), Not defined andi opr3 type({1})".format(hex(self.addr), self.opr3.type))
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' & ' + self.opr3.value
 		elif self.opr2.type == asm_type['Imm']:
 			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '&' + self.opr2.value + ')')
+
+			line = '// ' + self.opr1.value + ' &= ' + self.opr2.value
 		else:
 			error("[-] address({0}), Not defined andi opernad type({1})".format(hex(self.addr), self.opr2.type))
 
-		return None, None
+		return line, None
 
 	# or instruction
 	def do_or(self, o_reg, o_func):
@@ -40,12 +44,16 @@ class MIPS_Asm_Bits(MIPS_Asm):
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '|' + self.opr3.value + ')')
 			else:
 				error("[-] address({0}), Not defined or opr3 type({1})".format(hex(self.addr), self.opr3.type))
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' | ' + self.opr3.value
 		elif self.opr2.type == asm_type['Imm']:
 			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '|' + self.opr2.value + ')')
+
+			line = '// ' + self.opr1.value + ' |= ' + self.opr2.value
 		else:
 			error("[-] address({0}), Not defined or opernad type({1})".format(hex(self.addr), self.opr2.type))
 
-		return None, None
+		return line, None
 
 	# srl shift instruction
 	def do_srl(self, o_reg, o_func):
@@ -53,12 +61,16 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		if self.opr2.type == asm_type['Gen_Reg']:
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr2.value) + '>>' + self.opr3.value)
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' >> ' + self.opr3.value
 		elif self.opr2.type == asm_type['Imm']:
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr1.value) + '>>' + self.opr2.value)
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr1.value + ' >> ' + self.opr2.value
 		else:
 			error("[-] address({0}), Not defined srl opernad type({1})".format(hex(self.addr), self.opr2.type))
 
-		return None, None
+		return line, None
 
 	# sra shift instruction
 	def do_sra(self, o_reg, o_func):
@@ -66,8 +78,12 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		if self.opr2.type == asm_type['Gen_Reg']:
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr2.value) + '>>' + self.opr3.value)
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' >> ' + self.opr3.value
 		elif self.opr2.type == asm_type['Imm']:
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr1.value) + '>>' + self.opr2.value)
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr1.value + ' >> ' + self.opr2.value
 		else:
 			error("[-] address({0}), Not defined sra opernad type({1})".format(hex(self.addr), self.opr2.type))
 
@@ -79,8 +95,12 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		if self.opr2.type == asm_type['Gen_Reg']:
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr2.value) + '<<' + self.opr3.value)
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' << ' + self.opr3.value
 		elif self.opr2.type == asm_type['Imm']:
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr1.value) + '<<' + self.opr2.value)
+
+			line = '// ' + self.opr1.value + ' = ' + self.opr1.value + ' << ' + self.opr2.value
 		else:
 			error("[-] address({0}), Not defined sll opernad type({1})".format(hex(self.addr), self.opr2.type))
 

@@ -15,35 +15,39 @@ class MIPS_Asm_Jump(MIPS_Asm):
 
 		self.next_addr = idc.NextHead(addr)
 		self.next_result, n_addr = dispatch(self.next_addr, o_reg, o_func)
-		check_assert("[-] address({0}), dispatch error in branch".format(hex(self.next_addr)), n_addr is None or n_addr == self.next_addr)
+		check_assert("[-] address({0}), dispatch error in jump".format(hex(self.next_addr)), n_addr is None or n_addr == self.next_addr)
 
 	# jump instruction
 	def do_j(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != j".format(hex(self.addr), self.ins), self.ins == 'j')
 
-		line = ''
+		comment = ''
 		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += 'goto ' + self.opr1.value + ';'
+			comment = self.next_result
+			comment += '\n    '
+		comment += '// [jump] ' + self.opr1.value + '\n    '
+		line = 'goto ' + self.opr1.value + ';'
 
-		return line, self.next_addr
+		return comment + line, self.next_addr
 
 	# jump + address + linked instruction
 	def do_jal(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != jal".format(hex(self.addr), self.ins), self.ins == 'jal')
 
+		comment = '// [call] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
 		line = self.opr1.value
 		line += '('
 		line += o_reg.get_func_arg()
 		line += ')'
 
-		next_next_addr = idc.NextHead(self.next_addr)
-		if idc.GetOpnd(next_next_addr, 0) == '$v0' or idc.GetOpnd(next_next_addr, 1) == '$v0':
+		if asmutils.check_use_return(self.next_addr):
 			o_reg.set_register('$v0', line)
 			return None, self.next_addr
 
-		return line, self.next_addr
+		if self.next_result is not None:
+			comment = self.next_result + '\n    ' + comment
+
+		return comment + line, self.next_addr
 
 	# jump register instruction
 	def do_jr(self, o_reg, o_func):
@@ -51,30 +55,33 @@ class MIPS_Asm_Jump(MIPS_Asm):
 		if self.opr1.value == '$ra':
 			return None, None
 
+		comment = ''
+		if self.next_result is not None:
+			comment = self.next_result
+			comment += '\n    '
+		comment += '// [jump] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
 		line = o_reg.get_register(self.opr1.value)
 		line += '('
 		line += o_reg.get_func_arg()
 		line += ')'
 
-		next_next_addr = idc.NextHead(self.next_addr)
-		if idc.GetOpnd(next_next_addr, 0) == '$v0' or idc.GetOpnd(next_next_addr, 1) == '$v0':
-			o_reg.set_register('$v0', line)
-			return None, self.next_addr
-
-		return line, self.next_addr
+		return comment + line, self.next_addr
 
 	# jump register + address + linked instruction
 	def do_jalr(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != jalr".format(hex(self.addr), self.ins), self.ins == 'jalr')
 
+		comment = '// [call] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
 		line = o_reg.get_register(self.opr1.value)
 		line += '('
 		line += o_reg.get_func_arg()
 		line += ')'
 
-		next_next_addr = idc.NextHead(self.next_addr)
-		if idc.GetOpnd(next_next_addr, 0) == '$v0' or idc.GetOpnd(next_next_addr, 1) == '$v0':
+		if asmutils.check_use_return(self.next_addr):
 			o_reg.set_register('$v0', line)
 			return None, self.next_addr
 
-		return line, self.next_addr
+		if self.next_result is not None:
+			comment = self.next_result + '\n    ' + comment
+
+		return comment + line, self.next_addr

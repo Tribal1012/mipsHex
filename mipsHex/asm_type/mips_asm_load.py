@@ -24,7 +24,9 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, '((uint8_t)' + var + ')')
 
-		return None, None
+		line = '// ' + self.opr1.value + ' = ' + '((uint8_t)' + var + ')'
+
+		return line, None
 
 	# lhu instruction 
 	def do_lhu(self, o_reg, o_func):
@@ -39,7 +41,9 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, '((uint16_t)' + var + ')')
 
-		return None, None
+		line = '// ' + self.opr1.value + ' = ' + '((uint16_t)' + var + ')'
+
+		return line, None
 
 	# load word instruction
 	def do_lw(self, o_reg, o_func):
@@ -54,7 +58,9 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, var)
 
-		return None, None
+		line = '// ' + self.opr1.value + ' = ' + var
+
+		return line, None
 
 	# load immediate instruction
 	def do_li(self, o_reg, o_func):
@@ -63,7 +69,9 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, self.opr2.value)
 
-		return None, None
+		line = '// ' + self.opr1.value + ' = ' + self.opr2.value
+
+		return line, None
 
 	# load unsigned immediate instruction
 	def do_lui(self, o_reg, o_func):
@@ -72,7 +80,9 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, self.opr2.value)
 
-		return None, None
+		line = '// ' + self.opr1.value + ' = ' + self.opr2.value
+
+		return line, None
 
 	# load address instruction
 	def do_la(self, o_reg, o_func):
@@ -81,4 +91,6 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, self.opr2.value)
 
-		return None, None
+		line = '// ' + self.opr1.value + ' = ' + self.opr2.value
+
+		return line, None
