@@ -1,29 +1,25 @@
 # asmutils.py
 
+from define import *
+
 import abc
 
 '''
 	assembly utils about operand
 	__init__ : parsed operand information
-	convert_operand : convert from operand to the local variable feature
-	parse_operand : parse operand datas
+	have_string : check variable which have string
+	get_string : call have_string, then if valiable have string, return refered string by valiable
 '''
 class AsmUtils(object):
 	__metaclass__ = abc.ABCMeta
 
 	def __init__(self):
-		self.info = {
-			'sf':None,
-			'var':None,
-			'reg':None,
-			'addr':None,
-			'offset':None
-		}
-
-	@abc.abstractmethod
-	def convert_operand(self, operand):
 		pass
 
 	@abc.abstractmethod
-	def parse_operand(self, operand, o_reg=None):
+	def have_string(self, operand):
+		pass
+
+	@abc.abstractmethod
+	def get_string(self, operand):
 		pass

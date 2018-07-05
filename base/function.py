@@ -49,6 +49,26 @@ class Function(object):
 
 			return self.func_name, self.func_addr
 
+	@staticmethod
+	def get_comment(prefix=None, opr1=None, opr2=None, opr3=None, operation=None):
+		comment = '// '
+		comment += prefix+' ' if prefix else ''
+
+		if opr1:
+			comment += opr1
+			
+			if opr2:
+				comment += ' = '
+
+		if opr2:	
+			comment += opr2
+
+			if operation and opr3:
+				comment += ' {0} {1}'.format(operation, opr3)
+
+		return comment
+
+
 	def make(self, contents=None):
 		TAB = '    ' # 4 space
 		NEXTLINE = '\n'

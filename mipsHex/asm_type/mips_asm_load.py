@@ -15,7 +15,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_lbu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lbu".format(hex(self.addr), self.ins), self.ins == 'lbu')
 
-		var_name = asmutils.convert_operand(self.opr2.value, o_reg)
+		var_name = self.opr2.convert(o_reg)
 
 		if o_func.get_local_var(var_name) is not None:
 			var = o_func.get_local_var(var_name)
@@ -24,15 +24,15 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, '((uint8_t)' + var + ')')
 
-		line = '// ' + self.opr1.value + ' = ' + '((uint8_t)' + var + ')'
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2='((uint8_t)' + var + ')')
 
-		return line, None
+		return comment, None
 
 	# lhu instruction 
 	def do_lhu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lhu".format(hex(self.addr), self.ins), self.ins == 'lhu')
 
-		var_name = asmutils.convert_operand(self.opr2.value, o_reg)
+		var_name = self.opr2.convert(o_reg)
 
 		if o_func.get_local_var(var_name) is not None:
 			var = o_func.get_local_var(var_name)
@@ -41,15 +41,15 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, '((uint16_t)' + var + ')')
 
-		line = '// ' + self.opr1.value + ' = ' + '((uint16_t)' + var + ')'
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2='((uint16_t)' + var + ')')
 
-		return line, None
+		return comment, None
 
 	# load word instruction
 	def do_lw(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lw".format(hex(self.addr), self.ins), self.ins == 'lw')
 
-		var_name = asmutils.convert_operand(self.opr2.value, o_reg)
+		var_name = self.opr2.convert(o_reg)
 
 		if o_func.get_local_var(var_name) is not None:
 			var = o_func.get_local_var(var_name)
@@ -58,39 +58,39 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, var)
 
-		line = '// ' + self.opr1.value + ' = ' + var
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=var)
 
-		return line, None
+		return comment, None
 
 	# load immediate instruction
 	def do_li(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != li".format(hex(self.addr), self.ins), self.ins == 'li')
-		check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(self.addr, self.opr2.type, asm_type['Imm']), self.opr2.type == asm_type['Imm'])
+		check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(self.addr, self.opr2.type, ASM_TYPE['Imm']), self.opr2.type == ASM_TYPE['Imm'])
 
 		o_reg.set_register(self.opr1.value, self.opr2.value)
 
-		line = '// ' + self.opr1.value + ' = ' + self.opr2.value
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value)
 
-		return line, None
+		return comment, None
 
 	# load unsigned immediate instruction
 	def do_lui(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lui".format(hex(self.addr), self.ins), self.ins == 'lui')
-		check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(self.addr, self.opr2.type, asm_type['Imm']), self.opr2.type == asm_type['Imm'])
+		check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(self.addr, self.opr2.type, ASM_TYPE['Imm']), self.opr2.type == ASM_TYPE['Imm'])
 
 		o_reg.set_register(self.opr1.value, self.opr2.value)
 
-		line = '// ' + self.opr1.value + ' = ' + self.opr2.value
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value)
 
-		return line, None
+		return comment, None
 
 	# load address instruction
 	def do_la(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != la".format(hex(self.addr), self.ins), self.ins == 'la')
-		check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(hex(self.addr), self.opr2.type, asm_type['Imm']), self.opr2.type == asm_type['Imm'])
+		check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(hex(self.addr), self.opr2.type, ASM_TYPE['Imm']), self.opr2.type == ASM_TYPE['Imm'])
 
 		o_reg.set_register(self.opr1.value, self.opr2.value)
 
-		line = '// ' + self.opr1.value + ' = ' + self.opr2.value
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value)
 
-		return line, None
+		return comment, None

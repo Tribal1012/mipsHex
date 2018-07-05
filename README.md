@@ -1,3 +1,3 @@
-# mipsHex ver.0.4
+# mipsHex
 
 This script convert from mips assembly to C Code with IDA.

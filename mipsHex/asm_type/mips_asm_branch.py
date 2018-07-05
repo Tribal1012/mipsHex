@@ -26,7 +26,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr1=self.opr1.value) + '\n    '
 		line += 'goto ' + self.opr1.value + ';'
 
 		return line, self.next_addr
@@ -39,7 +39,8 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += '!' + o_reg.get_register(self.opr1.value)
 		line += ') ' + self.opr2.value + ';'
@@ -54,7 +55,8 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value)
 		line += ') ' + self.opr2.value + ';'
@@ -69,8 +71,10 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
-		line += '// [branch] ' + self.opr2.value + ' <-- ' + o_reg.get_register(self.opr2.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr2.value), opr3=self.opr2.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' == ' + o_reg.get_register(self.opr2.value)
 		line += ') ' + self.opr3.value + ';'
@@ -85,8 +89,10 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
-		line += '// [branch] ' + self.opr2.value + ' <-- ' + o_reg.get_register(self.opr2.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr2.value), opr3=self.opr2.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' != ' + o_reg.get_register(self.opr2.value)
 		line += ') ' + self.opr3.value + ';'
@@ -101,7 +107,8 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' < 0'
 		line += ') ' + self.opr2.value + ';'
@@ -116,7 +123,8 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' > 0'
 		line += ') ' + self.opr2.value + ';'
@@ -131,7 +139,8 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' >= 0'
 		line += ') ' + self.opr2.value + ';'
@@ -146,7 +155,8 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		if self.next_result is not None:
 			line = self.next_result
 			line += '\n    '
-		line += '// [branch] ' + self.opr1.value + ' <-- ' + o_reg.get_register(self.opr1.value) + '\n    '
+		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' <= 0'
 		line += ') ' + self.opr2.value + ';'

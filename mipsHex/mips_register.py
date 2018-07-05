@@ -67,3 +67,4 @@ class MIPS_Register(br.Register):
 		
 	def issaved(self, register):
 		return True if register in self.mips_saved_register.keys() else False
+

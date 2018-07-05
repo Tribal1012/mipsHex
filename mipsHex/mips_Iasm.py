@@ -28,6 +28,7 @@ class MIPS_IAsm(IAsm):
 			'jump':mips_jump.MIPS_Asm_Jump,
 			'arithmetic':mips_arith.MIPS_Asm_Arithmetic,
 			'bits':mips_bits.MIPS_Asm_Bits,
+			'shift':mips_shift.MIPS_Asm_Shift,
 			'etc':mips_etc.MIPS_Asm_Etc
 		}
 

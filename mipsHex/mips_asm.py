@@ -14,4 +14,5 @@ from mips_asmutils import asmutils
 class MIPS_Asm(Asm):
 	def __init__(self, addr):
 		super(MIPS_Asm, self).__init__(addr)
+
 		pass

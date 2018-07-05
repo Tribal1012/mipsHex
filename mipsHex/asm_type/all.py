@@ -11,4 +11,5 @@ import mips_asm_set as mips_set
 import mips_asm_jump as mips_jump
 import mips_asm_arithmetic as mips_arith
 import mips_asm_bits as mips_bits
+import mips_asm_shift as mips_shift
 import mips_asm_etc as mips_etc

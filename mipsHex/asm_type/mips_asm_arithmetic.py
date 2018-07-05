@@ -15,75 +15,83 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 	def do_addiu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != addiu".format(hex(self.addr), self.ins), self.ins == 'addiu')
 
-		if self.opr2.type == asm_type['Gen_Reg']:
-			if self.opr3:
-				if self.opr3.value[1:].find('+') != -1 or self.opr3.value[1:].find('-') != -1: 
-					if self.opr2.value == '$sp':
-						new_opr = asmutils.convert_operand(self.opr3.value + '(' + self.opr2.value + ')', o_reg)
-						o_reg.set_register(self.opr1.value, new_opr)
-					else:
-						reg_val = o_reg.get_register(self.opr2.value)
-						new_opr = asmutils.convert_operand(self.opr3.value)
-						o_reg.set_register(self.opr1.value, hex(idc.LocByName(reg_val) + int(new_opr, 16)))
-
-					line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' + ' + self.opr3.value
+		if self.get_operand_count() == 3:
+			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+				if self.opr2.value == '$sp' and self.opr3.feature == OPND_FEATURE['Imm_Imm']:
+					# addiu opr1, sp, 0x50_var
+					new_opr = Operand(ASM_TYPE['Base_Idx_Disp'], self.opr3.value + '(' + self.opr2.value + ')')
+					o_reg.set_register(self.opr1.value, new_opr.convert(o_reg))
 				else:
-					error("[-] current({0}), Not defined addiu operand3 type".format(hex(self.addr)))
+					# addit opr1, v0, opr3
+					reg_val = o_reg.get_register(self.opr2.value)
+					cvt_opr3 = self.opr3.convert(o_reg)
+					o_reg.set_register(self.opr1.value, hex(idc.LocByName(reg_val) + int(cvt_opr3, 16)))
+
+				comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='+')
 			else:
+				error("[-] current({0}), Not defined addiu operand2 type".format(hex(self.addr)))
+
+		elif self.get_operand_count() == 2:
+			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+				# addiu opr1, v0
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + o_reg.get_register(self.opr2.value) + ')')
-				line = '// ' + self.opr1.value + ' += ' + self.opr2.value
-		elif self.opr2.type == asm_type['Imm']:
-			if self.opr2.value[1:].find('+') != -1 or self.opr2.value[1:].find('-') != -1:
-				parsed = asmutils.parse_operand(self.opr2.value + '(' + self.opr1.value + ')')
-				if int(parsed['offset'], 16) == idc.LocByName(o_reg.get_register(parsed['reg'])) * -1:
-					c_string = asmutils.get_string(parsed['addr'])
-					if c_string:
+
+			elif self.opr2.type == ASM_TYPE['Imm']:
+				if self.opr2.feature == OPND_FEATURE['Addr_Imm']:
+					new_opr = Operand(ASM_TYPE['Base_Idx_Disp'], self.opr2.value + '(' + self.opr1.value + ')')
+					cvt_opr = new_opr.convert(o_reg)
+					if asmutils.have_string(cvt_opr):
+						c_string = asmutils.get_string(cvt_opr)
 						o_reg.set_register(self.opr1.value, c_string)
 					else:
-						o_reg.set_register(self.opr1.value, parsed['addr'])
+						o_reg.set_register(self.opr1.value, cvt_opr)
 				else:
-					print "[-] cause : " + parsed['offset'] + ", " + parsed['reg']
-					error("[-] current({0}), operand2 parse error".format(hex(self.addr)))
+					# addiu v0, 1
+					o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + self.opr2.value + ')')
+
 			else:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + self.opr2.value + ')')
+				error("[-] current({0}), Not defined addiu operand type".format(hex(self.addr)))
 
-			line = '// ' + self.opr1.value + ' += ' + self.opr2.value
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='+')
 		else:
-			error("[-] current({0}), Not defined addiu operand type".format(hex(self.addr)))
+			error("[-] current({0}), Not defined addiu".format(hex(self.addr)))			
 
-		return line, None
+		return comment, None
 
 	# addu instruction
 	def do_addu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != addu".format(hex(self.addr), self.ins), self.ins == 'addu')
 
-		if self.opr2.type == asm_type['Gen_Reg']:
-			if self.opr3:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '+' + self.opr3.value + ')')
+		if self.get_operand_count() == 3:
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '+' + self.opr3.value + ')')
 
-				line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' + ' + self.opr3.value
-			else:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + self.opr2.value + ')')
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='+')
 
-				line = '// ' + self.opr1.value + ' += ' + self.opr2.value
+		elif self.get_operand_count() == 2:
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '+' + self.opr2.value + ')')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='+')
+
 		else:
-			error("[-] current({0}), Not defined addu operand type".format(hex(self.addr)))
+			error("[-] current({0}), Not defined addu".format(hex(self.addr)))
 
-		return line, None
+		return comment, None
 
 	# subu instruction
 	def do_subu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != subu".format(hex(self.addr), self.ins), self.ins == 'subu')
 
-		if self.opr2.type == asm_type['Gen_Reg']:
+		if self.get_operand_count() == 3:
 			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '-' + self.opr3.value + ')')
 
-			line = '// ' + self.opr1.value + ' = ' + self.opr2.value + ' - ' + self.opr3.value
-		elif self.opr2.type == asm_type['Imm']:
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='-')
+
+		elif self.get_operand_count() == 2:
 			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '-' + self.opr2.value + ')')
 
-			line = '// ' + self.opr1.value + ' -= ' + self.opr2.value
-		else:
-			error("[-] current({0}), Not defined subu operand type".format(hex(self.addr)))
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='-')
 
-		return line, None
+		else:
+			error("[-] current({0}), Not defined subu".format(hex(self.addr)))
+
+		return comment, None

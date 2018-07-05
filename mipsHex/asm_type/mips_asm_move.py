@@ -18,13 +18,13 @@ class MIPS_Asm_Move(MIPS_Asm):
 			o_func.set_argument(self.opr2.value.replace('$', ''))
 			o_reg.set_register(self.opr1.value, self.opr2.value)
 
-			line = '// ' + self.opr1.value + ' = ' + self.opr2.value
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value)
 		else:
 			o_reg.set_register(self.opr1.value, o_reg.get_register(self.opr2.value))
 
-			line = '// ' + self.opr1.value + ' = ' + o_reg.get_register(self.opr2.value)
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register(self.opr2.value))
 
-		return line, None
+		return comment, None
 
 	# move if not zero instruction
 	def do_movn(self, o_reg, o_func):
@@ -36,6 +36,6 @@ class MIPS_Asm_Move(MIPS_Asm):
 
 		o_reg.set_register(self.opr1.value, line)
 
-		line = '// ' + self.opr1.value + ' = ' + line
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=line)
 
-		return line, None
+		return comment , None

@@ -8,7 +8,7 @@ from base.error import *
 import idautils
 import idc
 
-VERSION = 0.3
+VERSION = 0.4
 
 '''
 get reference list in function
@@ -41,6 +41,24 @@ def get_refer_list(start=None, end=None):
 	return func_ref_list
 
 '''
+append a reference address
+'''
+def append_refer_addr(addr, ref_list, to):
+	if addr in ref_list:
+		to += NEXTLINE
+		to += 'loc_' + hex(addr)[2:-1].upper() + ':'
+
+	return to
+'''
+append new line
+'''
+def append_new_line(line, to):
+	if line:
+		to += NEXTLINE + TAB + line
+
+	return to
+
+'''
 main function for mips hex-ray
 '''
 def hex_ray_mips():
@@ -61,65 +79,22 @@ def hex_ray_mips():
 
 	func_ref_list = get_refer_list(func_addr[0], func_addr[1])
 
-	# Skip prologue and create local variable that stored previous registers
 	haslocal = False
 	current = func_addr[0]
-	total_stack_size = 0
 	while current <= func_addr[1]:
-		if not haslocal:
-			ins = idc.GetMnem(current)
-			opr1 = idc.GetOpnd(current, 0)
-			opr2 = idc.GetOpnd(current, 1)
-
-			if ins == 'sw':
-				if opr1 == '$ra':
-					try:
-						func.set_local_var('ret', opr1)
-					except:
-						print "[-] Not found total_stack_size!"
-				elif reg.issaved(opr1):
-					try:
-						var_name = asmutils.convert_operand(opr2)
-						func.set_local_var(var_name, opr1)
-					except:
-						print "[-] Not found total_stack_size!!"
-				else:
-					haslocal = True
-			elif ins == 'addiu':
-				if opr1 == '$sp':
-					total_stack_size = int(opr2, 16)
-				else:
-					haslocal = True
-			elif ins == 'li':
-				if opr1 == '$gp':
-					asm.dispatch(current, reg, func)
-			elif ins == 'addu':
-				if opr1 == '$gp':
-					asm.dispatch(current, reg, func)
-			else:
-				if not haslocal:
-					haslocal = True
-
-				continue
-
-			current = idc.NextHead(current, func_addr[1])
-			continue
-
 		# Write reference addresses
-		if current in func_ref_list:
-			func_contents += NEXTLINE
-			func_contents += 'loc_' + hex(current)[2:-1].upper() + ':'
+		func_contents = append_refer_addr(current, func_ref_list, func_contents)
 
+		# assmbly dispatch
 		line, n_addr = asm.dispatch(current, reg, func)
 
-		if line is not None:
-			line = NEXTLINE + TAB + line
-			func_contents += line
+		# apply dispatch result
+		func_contents = append_new_line(line, func_contents)
 
-		if n_addr is None:
-			current = idc.NextHead(current, func_addr[1])
-		else:
+		if n_addr:
 			current = idc.NextHead(n_addr, func_addr[1])
+		else:
+			current = idc.NextHead(current, func_addr[1])
 
 	with open(func_name + ".c", "w") as fh:
 		fh.write(func.function(func_contents))
