@@ -42,8 +42,10 @@ class MIPS_Asm_Jump(MIPS_Asm):
 		line += ')'
 
 		if asmutils.check_use_return(self.next_addr):
-			o_reg.set_register('$v0', line)
-			return None, self.next_addr
+			o_reg.set_register('$v0', 'v0_' + self.opr1.value)
+			comment += o_func.get_comment(prefix='[return value]', opr1='$v0', opr2=line) 
+
+			return comment, self.next_addr
 
 		if self.next_result is not None:
 			comment = self.next_result + '\n    ' + comment
@@ -61,10 +63,7 @@ class MIPS_Asm_Jump(MIPS_Asm):
 			comment = self.next_result
 			comment += '\n    '
 		comment += o_func.get_comment(prefix='[jump]', opr1=self.opr1.value) + '\n    '
-		line = o_reg.get_register(self.opr1.value)
-		line += '('
-		line += o_reg.get_func_arg()
-		line += ')'
+		line = 'goto ' + o_reg.get_register(self.opr1.value) + ';'
 
 		return comment + line, self.next_addr
 
@@ -80,8 +79,10 @@ class MIPS_Asm_Jump(MIPS_Asm):
 		line += ')'
 
 		if asmutils.check_use_return(self.next_addr):
-			o_reg.set_register('$v0', line)
-			return None, self.next_addr
+			o_reg.set_register('$v0', 'v0_' + o_reg.get_register(self.opr1.value))
+			comment += o_func.get_comment(prefix='[return value]', opr1='$v0', opr2=line) 
+
+			return comment, self.next_addr
 
 		if self.next_result is not None:
 			comment = self.next_result + '\n    ' + comment

@@ -26,7 +26,8 @@ class MIPS_Register(br.Register):
 		self.mips_temp_register = {'$t0':None, '$t1':None, '$t2':None, '$t3':None, '$t4':None, '$t5':None, '$t6':None, '$t7':None, '$t8':None, '$t9':None}
 		self.mips_saved_register = {'$s0':None, '$s1':None, '$s2':None, '$s3':None, '$s4':None, '$s5':None, '$s6':None, '$s7':None}
 		self.mips_stack_register = {'$sp':'$sp', '$fp':'$fp', '$ra':'$ra', '$gp':'$gp'}
-		self.register_list = (self.mips_value_register, self.mips_argument_register, self.mips_temp_register, self.mips_saved_register, self.mips_stack_register)
+		self.mips_special_register = {'$lo':None, '$hi':None}
+		self.register_list = (self.mips_value_register, self.mips_argument_register, self.mips_temp_register, self.mips_saved_register, self.mips_stack_register, self.mips_special_register)
 
 	def get_register(self, register):
 		for line in self.register_list:

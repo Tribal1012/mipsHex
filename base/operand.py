@@ -175,8 +175,13 @@ class Operand(object):
 
 		elif self._feature == OPND_FEATURE['Addr_Imm_Reg']:
 			reg = o_reg.get_register(parsed[2])
-			if self.is_expand_operand(reg, parsed[1]):
-				return parsed[0]
+			try:
+				if self.is_expand_operand(reg, parsed[1]):
+					return parsed[0]
+			except:
+				# converting flow error, Temporarily allow this.
+				if idc.LocByName(reg) == 0xffffffff:
+					return parsed[0]
 
 			imm = int(parsed[1], 16)
 			addr = idc.LocByName(parsed[0])

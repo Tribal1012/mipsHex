@@ -39,3 +39,37 @@ class MIPS_Asm_Move(MIPS_Asm):
 		comment = o_func.get_comment(opr1=self.opr1.value, opr2=line)
 
 		return comment , None
+
+	# move if zero instruction
+	def do_movz(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != movz".format(hex(self.addr), self.ins), self.ins == 'movz')
+
+		line = '!' + o_reg.get_register(self.opr3.value)  + '? '
+		line += o_reg.get_register(self.opr2.value) + ':'
+		line += o_reg.get_register(self.opr1.value)
+
+		o_reg.set_register(self.opr1.value, line)
+
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=line)
+
+		return comment , None
+
+	# move from high instruction
+	def do_mfhi(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != mfhi".format(hex(self.addr), self.ins), self.ins == 'mfhi')
+
+		o_reg.set_register(self.opr1.value, o_reg.get_register('$hi'))
+
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register('$hi'))
+
+		return comment , None
+
+	# move from low instruction
+	def do_mflo(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != mflo".format(hex(self.addr), self.ins), self.ins == 'mflo')
+
+		o_reg.set_register(self.opr1.value, o_reg.get_register('$lo'))
+
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register('$lo'))
+
+		return comment , None

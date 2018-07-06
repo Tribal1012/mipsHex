@@ -15,7 +15,8 @@ import idc
 	__init__ : call super class's __init__
 	have_string : check variable which have string
 	get_string : call have_string, then if valiable have string, return refered string by valiable
-	check_var_naming : rename for general immediate values
+	convert_var_naming : rename for general immediate values
+	check_var_naming : It check the specific operand to have variable naming rule
 	check_use_return : check a function's return value($v0)
 
 	global MIPS_AsmUtils object : asmutils
@@ -40,7 +41,7 @@ class MIPS_AsmUtils(bau.AsmUtils):
 
 		return None
 
-	def check_var_naming(self, val):
+	def convert_var_naming(self, val):
 		match = re.match(r"^([0-9a-zA-Z_]+)$", val)
 		if match:
 			# variable naming rule
@@ -59,6 +60,13 @@ class MIPS_AsmUtils(bau.AsmUtils):
 			new_val = self.check_var_naming(new_val)
 
 		return new_val
+
+	def check_var_naming(self, val):
+		match = re.match(r"^([0-9a-zA-Z_]+)$", val)
+		if match:
+			return True
+		else:
+			return False
 
 	def check_use_return(self, addr):
 		next_addr = idc.NextHead(addr)

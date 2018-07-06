@@ -1,5 +1,20 @@
 # Patch Note
 
+ver 0.4
+
+- addition mips assembly (movz, mult, mfhi, mflo)
+
+- remove type check (mips_asm_set)
+
+- modify return value that is registered by set_register (jal, jalr)
+
+- remove replace (mips_asm_store).
+
+- modify check_var_naming => convert_var_naming, and add check_var_naming method.
+
+- temporarily allow the idc.LocByName's return value that is 0xffffffff in operand.is_expand_operand.
+
+
 ver 0.3
 
 - view thw assembly calc process
@@ -7,6 +22,7 @@ ver 0.3
 - add method (check_return)
 
 - sort local_var list
+
 
 ver 0.2
 
