@@ -73,3 +73,23 @@ class MIPS_Asm_Move(MIPS_Asm):
 		comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register('$lo'))
 
 		return comment , None
+
+	# move to high instruction
+	def do_mthi(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != mthi".format(hex(self.addr), self.ins), self.ins == 'mthi')
+
+		o_reg.set_register('$hi', o_reg.get_register(self.opr2.value))
+
+		comment = o_func.get_comment(opr1='$hi', opr2=o_reg.get_register(self.opr2.value))
+
+		return comment , None
+
+	# move to low instruction
+	def do_mtlo(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != mtlo".format(hex(self.addr), self.ins), self.ins == 'mtlo')
+
+		o_reg.set_register('$lo', o_reg.get_register(self.opr2.value))
+
+		comment = o_func.get_comment(opr1='$lo', opr2=o_reg.get_register(self.opr2.value))
+
+		return comment , None

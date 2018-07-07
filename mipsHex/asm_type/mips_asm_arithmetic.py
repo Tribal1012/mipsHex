@@ -11,6 +11,93 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 	def __init__(self, addr):
 		super(MIPS_Asm_Arithmetic, self).__init__(addr)
 
+	# add instruction
+	def do_add(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != add".format(hex(self.addr), self.ins), self.ins == 'add')
+
+		if self.get_operand_count() == 3:
+			if self.opr3.type == ASM_TYPE['Gen_Reg']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' + ' + o_reg.get_register(self.opr3.value) + ')')
+
+			else:
+				error("[-] address({0}), Not defined add opr3 type({1})".format(hex(self.addr), self.opr3.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='+')
+
+		elif self.get_operand_count() == 2:
+			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' + ' + o_reg.get_register(self.opr2.value) + ')')
+
+			else:
+				error("[-] address({0}), Not defined add opr2 type({1})".format(hex(self.addr), self.opr2.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='+')
+
+		else:
+			error("[-] current({0}), Not defined add".format(hex(self.addr)))
+
+		return comment, None
+
+	# addi instruction
+	def do_addi(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != addi".format(hex(self.addr), self.ins), self.ins == 'addi')
+
+		if self.get_operand_count() == 3:
+			if self.opr3.type == ASM_TYPE['Imm']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' + ' + self.opr3.value + ')')
+
+			else:
+				error("[-] address({0}), Not defined addi opr3 type({1})".format(hex(self.addr), self.opr3.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='+')
+
+		elif self.get_operand_count() == 2:
+			if self.opr2.type == ASM_TYPE['Imm']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' + ' + self.opr2.value + ')')
+
+			else:
+				error("[-] address({0}), Not defined addi opr2 type({1})".format(hex(self.addr), self.opr2.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='+')
+
+		else:
+			error("[-] current({0}), Not defined addi".format(hex(self.addr)))
+
+		return comment, None
+
+	# addu instruction
+	def do_addu(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != addu".format(hex(self.addr), self.ins), self.ins == 'addu')
+
+		if self.get_operand_count() == 3:
+			if self.opr3.type == ASM_TYPE['Gen_Reg']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' + ' + o_reg.get_register(self.opr3.value) + ')')
+
+			elif self.opr3.type == ASM_TYPE['Imm']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' + ' + self.opr3.value + ')')
+
+			else:
+				error("[-] address({0}), Not defined addu opr3 type({1})".format(hex(self.addr), self.opr3.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='+')
+
+		elif self.get_operand_count() == 2:
+			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' + ' + o_reg.get_register(self.opr2.value) + ')')
+
+			elif self.opr2.type == ASM_TYPE['Imm']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' + ' + self.opr2.value + ')')
+
+			else:
+				error("[-] address({0}), Not defined addu opr2 type({1})".format(hex(self.addr), self.opr2.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='+')
+
+		else:
+			error("[-] current({0}), Not defined addu".format(hex(self.addr)))
+
+		return comment, None
+
 	# addiu instruction
 	def do_addiu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != addiu".format(hex(self.addr), self.ins), self.ins == 'addiu')
@@ -65,36 +152,30 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 
 		return comment, None
 
-	# addu instruction
-	def do_addu(self, o_reg, o_func):
-		check_assert("[-] Check ins, current({0}) : {1} != addu".format(hex(self.addr), self.ins), self.ins == 'addu')
+	# sub instruction
+	def do_sub(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != sub".format(hex(self.addr), self.ins), self.ins == 'sub')
 
 		if self.get_operand_count() == 3:
 			if self.opr3.type == ASM_TYPE['Gen_Reg']:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' + ' + o_reg.get_register(self.opr3.value) + ')')
-
-			elif self.opr3.type == ASM_TYPE['Imm']:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' + ' + self.opr3.value + ')')
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' - ' + o_reg.get_register(self.opr3.value) + ')')
 
 			else:
-				error("[-] address({0}), Not defined addu opr3 type({1})".format(hex(self.addr), self.opr3.type))
+				error("[-] address({0}), Not defined sub opr3 type({1})".format(hex(self.addr), self.opr3.type))
 
-			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='+')
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='-')
 
 		elif self.get_operand_count() == 2:
 			if self.opr2.type == ASM_TYPE['Gen_Reg']:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' + ' + o_reg.get_register(self.opr2.value) + ')')
-
-			elif self.opr2.type == ASM_TYPE['Imm']:
-				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' + ' + self.opr2.value + ')')
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' - ' + o_reg.get_register(self.opr2.value) + ')')
 
 			else:
-				error("[-] address({0}), Not defined addu opr2 type({1})".format(hex(self.addr), self.opr2.type))
+				error("[-] address({0}), Not defined sub opr2 type({1})".format(hex(self.addr), self.opr2.type))
 
-			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='+')
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='-')
 
 		else:
-			error("[-] current({0}), Not defined addu".format(hex(self.addr)))
+			error("[-] current({0}), Not defined sub".format(hex(self.addr)))
 
 		return comment, None
 
@@ -131,13 +212,124 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 
 		return comment, None
 
-	# multiply instruction
+	# mul instruction
+	def do_mul(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != mul".format(hex(self.addr), self.ins), self.ins == 'mul')
+
+		if self.get_operand_count() == 3:
+			if self.opr3.type == ASM_TYPE['Gen_Reg']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + ' * ' + o_reg.get_register(self.opr3.value) + ')')
+
+			else:
+				error("[-] address({0}), Not defined mul opr3 type({1})".format(hex(self.addr), self.opr3.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='-')
+
+		elif self.get_operand_count() == 2:
+			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' * ' + o_reg.get_register(self.opr2.value) + ')')
+
+			else:
+				error("[-] address({0}), Not defined mul opr2 type({1})".format(hex(self.addr), self.opr2.type))
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr1.value, opr3=self.opr2.value, operation='-')
+
+		else:
+			error("[-] current({0}), Not defined mul".format(hex(self.addr)))
+
+		return comment, None
+
+	# mult instruction
 	def do_mult(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != mult".format(hex(self.addr), self.ins), self.ins == 'mult')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		o_reg.set_register('$hi', '(' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' / 0xFFFFFFFF')
-		o_reg.set_register('$lo', '(' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' %% 0xFFFFFFFF')
+		o_reg.set_register('$hi', '(' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' %% 0xFFFFFFFF')
+		o_reg.set_register('$lo', '(' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' / 0xFFFFFFFF')
+
+		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
+
+		return comment, None
+
+	# multu instruction
+	def do_multu(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != multu".format(hex(self.addr), self.ins), self.ins == 'multu')
+		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
+
+		o_reg.set_register('$hi', '(' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' %% 0xFFFFFFFF')
+		o_reg.set_register('$lo', '(' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' / 0xFFFFFFFF')
+
+		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
+
+		return comment, None
+
+	# div instruction
+	def do_div(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != div".format(hex(self.addr), self.ins), self.ins == 'div')
+		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
+
+		o_reg.set_register('$hi', '(' + self.opr1.value + ' %% ' + self.opr2.value + ')')
+		o_reg.set_register('$lo', '(' + self.opr1.value + ' / ' + self.opr2.value + ')')
+
+		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
+
+		return comment, None
+
+	# divu instruction
+	def do_divu(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != divu".format(hex(self.addr), self.ins), self.ins == 'divu')
+		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
+
+		o_reg.set_register('$hi', '(' + self.opr1.value + ' %% ' + self.opr2.value + ')')
+		o_reg.set_register('$lo', '(' + self.opr1.value + ' / ' + self.opr2.value + ')')
+
+		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
+
+		return comment, None
+
+	# mul and add instruction
+	def do_madd(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != madd".format(hex(self.addr), self.ins), self.ins == 'madd')
+		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
+
+		o_reg.set_register('$hi', o_reg.get_register('$hi') + '+ (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' %% 0xFFFFFFFF')
+		o_reg.set_register('$lo', o_reg.get_register('$lo') + '+ (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' / 0xFFFFFFFF')
+
+		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
+
+		return comment, None
+
+	# mul and addu instruction
+	def do_maddu(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != maddu".format(hex(self.addr), self.ins), self.ins == 'maddu')
+		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
+
+		o_reg.set_register('$hi', o_reg.get_register('$hi') + '+ (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' %% 0xFFFFFFFF')
+		o_reg.set_register('$lo', o_reg.get_register('$lo') + '+ (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' / 0xFFFFFFFF')
+
+		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
+
+		return comment, None
+
+	# mul and sub instruction
+	def do_msub(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != msub".format(hex(self.addr), self.ins), self.ins == 'msub')
+		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
+
+		o_reg.set_register('$hi', o_reg.get_register('$hi') + '- (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' %% 0xFFFFFFFF')
+		o_reg.set_register('$lo', o_reg.get_register('$lo') + '- (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' / 0xFFFFFFFF')
+
+		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
+
+		return comment, None
+
+	# mul and subu instruction
+	def do_msubu(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != msubu".format(hex(self.addr), self.ins), self.ins == 'msubu')
+		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
+
+		o_reg.set_register('$hi', o_reg.get_register('$hi') + '- (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' %% 0xFFFFFFFF')
+		o_reg.set_register('$lo', o_reg.get_register('$lo') + '- (' + self.opr1.value + ' * ' + self.opr2.value + ')' + ' / 0xFFFFFFFF')
 
 		comment = o_func.get_comment(opr1='$hi, $lo', opr2=self.opr1.value, opr3=self.opr2.value, operation='*')
 

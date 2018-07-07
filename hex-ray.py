@@ -8,7 +8,7 @@ from base.error import *
 import idautils
 import idc
 
-VERSION = 0.5
+VERSION = 0.6
 
 '''
 get reference list in function

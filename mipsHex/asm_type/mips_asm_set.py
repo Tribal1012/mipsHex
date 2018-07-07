@@ -11,6 +11,25 @@ class MIPS_Asm_Set(MIPS_Asm):
 	def __init__(self, addr):
 		super(MIPS_Asm_Set, self).__init__(addr)
 
+	# set less than instruction
+	def do_slt(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != slt".format(hex(self.addr), self.ins), self.ins == 'slt')
+
+		if self.get_operand_count() == 3:
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '<' + o_reg.get_register(self.opr3.value) + ')? True:False')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register(self.opr2.value), opr3=o_reg.get_register(self.opr3.value) + '? True:False', operation='<')
+
+		elif self.get_operand_count() == 2:
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '<' + o_reg.get_register(self.opr2.value) + ')? True:False')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register(self.opr1.value), opr3=o_reg.get_register(self.opr2.value) + '? True:False', operation='<')
+		
+		else:
+			error("[-] address({0}), Not defined slt".format(hex(self.addr)))
+
+		return comment, None
+
 	# set less than immediate instruction
 	def do_slti(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != slti".format(hex(self.addr), self.ins), self.ins == 'slti')

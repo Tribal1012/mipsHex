@@ -1,5 +1,18 @@
 # Patch Note
 
+ver 0.6
+
+- add mips assembly
+
+- fix addiu error about the '$sp' register
+
+- fix mul assembly about 'hi' and 'lo' registers (fault)
+
+- add the '$pc' register
+
+- add to add the '$pc' register on all branch assemblies
+
+
 ver 0.5
 
 - addition mips assembly (xor, slti)
@@ -9,7 +22,7 @@ ver 0.5
 
 ver 0.4
 
-- addition mips assembly (movz, mult, mfhi, mflo)
+- add mips assembly (movz, mult, mfhi, mflo)
 
 - remove type check (mips_asm_set)
 
@@ -33,7 +46,7 @@ ver 0.3
 
 ver 0.2
 
-- addition mips assembly (bgtz, movn, ext, ins, blez)
+- add mips assembly (bgtz, movn, ext, ins, blez)
 
 - support ascii c string
 
@@ -46,7 +59,7 @@ ver 0.2
 
 ver.0.1
 
-- addition mips assembly (sb, bgez, lbu)
+- add mips assembly (sb, bgez, lbu)
 
 - fix get_register method return value (None => register)
 
@@ -54,9 +67,9 @@ ver.0.1
 
 - fix convert_operand method return value (string => calculated hex value)
 
-- addition method in mips_asmutils.py (have_string, get_string, check_var_naming)
+- add method in mips_asmutils.py (have_string, get_string, check_var_naming)
 
-- addition conditional to do_addiu, do_sw
+- add conditional to do_addiu, do_sw
 
 
 ver.0.0
