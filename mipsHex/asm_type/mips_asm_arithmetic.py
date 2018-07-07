@@ -17,9 +17,9 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 
 		if self.get_operand_count() == 3:
 			if self.opr2.type == ASM_TYPE['Gen_Reg']:
-				if self.opr2.value == '$sp' and self.opr3.feature == OPND_FEATURE['Imm_Imm']:
+				if o_reg.get_register(self.opr2.value) == '$sp' and self.opr3.feature == OPND_FEATURE['Imm_Imm']:
 					# addiu opr1, sp, 0x50_var
-					new_opr = Operand(ASM_TYPE['Base_Idx_Disp'], self.opr3.value + '(' + self.opr2.value + ')')
+					new_opr = Operand(ASM_TYPE['Base_Idx_Disp'], self.opr3.value + '(' + o_reg.get_register(self.opr2.value) + ')')
 					o_reg.set_register(self.opr1.value, new_opr.convert(o_reg))
 				else:
 					# addit opr1, v0, opr3
@@ -48,6 +48,10 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 						o_reg.set_register(self.opr1.value, c_string)
 					else:
 						o_reg.set_register(self.opr1.value, cvt_opr)
+				elif o_reg.get_register(self.opr1.value) == '$sp':
+					# for skip prologue
+					# need to parse a opnd_feature's reg for line 20
+					pass
 				else:
 					# addiu v0, 1
 					o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' + ' + self.opr2.value + ')')

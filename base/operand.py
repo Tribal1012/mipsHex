@@ -62,7 +62,7 @@ class Operand(object):
 			return OPND_FEATURE['Addr_Imm']
 
 		# e.g) 0xC($a0)
-		match = re.match(r"^([0-9a-fA-Fx]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
+		match = re.match(r"^(-?[0-9a-fA-Fx]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
 		if match:
 			return OPND_FEATURE['Reg_Imm']
 
@@ -119,7 +119,7 @@ class Operand(object):
 
 		elif self._feature == OPND_FEATURE['Reg_Imm']:
 			# e.g) 0xC($a0)
-			match = re.match(r"^([0-9a-fA-Fx]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
+			match = re.match(r"^(-?[0-9a-fA-Fx]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
 			if match:
 				return (match.group(1), match.group(2))
 

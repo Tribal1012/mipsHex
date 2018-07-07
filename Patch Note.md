@@ -1,5 +1,12 @@
 # Patch Note
 
+ver 0.5
+
+- addition mips assembly (xor, slti)
+
+- fix addiu error about '$sp' register
+
+
 ver 0.4
 
 - addition mips assembly (movz, mult, mfhi, mflo)
