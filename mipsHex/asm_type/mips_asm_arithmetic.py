@@ -244,7 +244,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != mult".format(hex(self.addr), self.ins), self.ins == 'mult')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', '(' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' %% 0xFFFFFFFF')
 		o_reg.set_register('$lo', '(' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' / 0xFFFFFFFF')
@@ -258,7 +258,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != multu".format(hex(self.addr), self.ins), self.ins == 'multu')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', '(' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' %% 0xFFFFFFFF')
 		o_reg.set_register('$lo', '(' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' / 0xFFFFFFFF')
@@ -272,7 +272,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != div".format(hex(self.addr), self.ins), self.ins == 'div')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', '(' + o_reg.get_register(self.opr1.value) + ' %% ' + opr2 + ')')
 		o_reg.set_register('$lo', '(' + o_reg.get_register(self.opr1.value) + ' / ' + opr2 + ')')
@@ -286,7 +286,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != divu".format(hex(self.addr), self.ins), self.ins == 'divu')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', '(' + o_reg.get_register(self.opr1.value) + ' %% ' + opr2 + ')')
 		o_reg.set_register('$lo', '(' + o_reg.get_register(self.opr1.value) + ' / ' + opr2 + ')')
@@ -300,7 +300,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != madd".format(hex(self.addr), self.ins), self.ins == 'madd')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', o_reg.get_register('$hi') + '+ (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' %% 0xFFFFFFFF')
 		o_reg.set_register('$lo', o_reg.get_register('$lo') + '+ (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' / 0xFFFFFFFF')
@@ -314,7 +314,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != maddu".format(hex(self.addr), self.ins), self.ins == 'maddu')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', o_reg.get_register('$hi') + '+ (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' %% 0xFFFFFFFF')
 		o_reg.set_register('$lo', o_reg.get_register('$lo') + '+ (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' / 0xFFFFFFFF')
@@ -328,7 +328,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != msub".format(hex(self.addr), self.ins), self.ins == 'msub')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', o_reg.get_register('$hi') + '- (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' %% 0xFFFFFFFF')
 		o_reg.set_register('$lo', o_reg.get_register('$lo') + '- (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' / 0xFFFFFFFF')
@@ -342,7 +342,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != msubu".format(hex(self.addr), self.ins), self.ins == 'msubu')
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
-		opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+		opr2 = o_reg.get_register(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
 
 		o_reg.set_register('$hi', o_reg.get_register('$hi') + '- (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' %% 0xFFFFFFFF')
 		o_reg.set_register('$lo', o_reg.get_register('$lo') + '- (' + o_reg.get_register(self.opr1.value) + ' * ' + opr2 + ')' + ' / 0xFFFFFFFF')
