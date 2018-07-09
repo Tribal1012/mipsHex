@@ -58,7 +58,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='&')
 
 		elif self.get_operand_count() == 2:
-			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+			if self.opr2.type == ASM_TYPE['Imm']:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' & ' + self.opr2.value + ')')
 
 			else:
@@ -118,7 +118,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='&')
 
 		elif self.get_operand_count() == 2:
-			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+			if self.opr2.type == ASM_TYPE['Imm']:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' & ' + self.opr2.value + ')')
 
 			else:
@@ -174,7 +174,7 @@ class MIPS_Asm_Bits(MIPS_Asm):
 			comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value, opr3=self.opr3.value, operation='&')
 
 		elif self.get_operand_count() == 2:
-			if self.opr2.type == ASM_TYPE['Gen_Reg']:
+			if self.opr2.type == ASM_TYPE['Imm']:
 				o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + ' ^ ' + self.opr2.value + ')')
 
 			else:
@@ -193,7 +193,9 @@ class MIPS_Asm_Bits(MIPS_Asm):
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
 		if self.get_operand_count() == 2:
-			o_reg.set_register(self.opr1.value, '- (' + self.opr2.value + ')')
+			opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+
+			o_reg.set_register(self.opr1.value, '- (' + opr2 + ')')
 
 		else:
 			error("[-] address({0}), Not defined negu".format(hex(self.addr)))
@@ -206,7 +208,9 @@ class MIPS_Asm_Bits(MIPS_Asm):
 		check_assert("[-] Check operand count, current({0}) : {1}".format(hex(self.addr), self.get_operand_count()), self.get_operand_count() == 2)
 
 		if self.get_operand_count() == 2:
-			o_reg.set_register(self.opr1.value, '~ (' + self.opr2.value + ')')
+			opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+
+			o_reg.set_register(self.opr1.value, '~ (' + opr2 + ')')
 
 		else:
 			error("[-] address({0}), Not defined not".format(hex(self.addr)))
@@ -231,7 +235,10 @@ class MIPS_Asm_Bits(MIPS_Asm):
 		
 		elif self.get_operand_count() == 2:
 			if self.opr2.type == ASM_TYPE['Gen_Reg']:
-				o_reg.set_register(self.opr1.value, '~ (' + o_reg.get_register(self.opr1.value) + ' | ' + self.opr2.value + ')')
+				o_reg.set_register(self.opr1.value, '~ (' + o_reg.get_register(self.opr1.value) + ' | ' + o_reg.get_register(self.opr2.value) + ')')
+
+			elif self.oprw.type == ASM_TYPE['Imm']:
+				o_reg.set_register(self.opr1.value, '~ (' + o_reg.get_register(self.opr2.value) + ' | ' + self.opr3.value + ')')
 
 			else:
 				error("[-] address({0}), Not defined nor opr2 type".format(hex(self.addr)))

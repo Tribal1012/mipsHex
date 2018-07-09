@@ -1,5 +1,14 @@
 # Patch Note
 
+ver 0.7
+
+- refix all branch assemblies
+
+- fix to check ASM_TYPE in all ins + 'i' assemblies
+
+- add a o_reg.get_register method in mult and div assemblies
+
+
 ver 0.6
 
 - add mips assembly
