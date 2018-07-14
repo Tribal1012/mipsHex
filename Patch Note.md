@@ -1,5 +1,15 @@
 # Patch Note
 
+
+ver 0.8
+
+- add mips assembly(about set)
+
+- support operand feature Addr+Imm (aAddr+1 + 0xC)
+
+- create mips_operand file for object structure
+
+
 ver 0.7
 
 - refix all branch assemblies

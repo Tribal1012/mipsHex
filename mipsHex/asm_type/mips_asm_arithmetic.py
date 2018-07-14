@@ -106,7 +106,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 			if self.opr2.type == ASM_TYPE['Gen_Reg']:
 				if o_reg.get_register(self.opr2.value) == '$sp' and self.opr3.feature == OPND_FEATURE['Imm_Imm']:
 					# addiu opr1, sp, 0x50_var
-					new_opr = Operand(ASM_TYPE['Base_Idx_Disp'], self.opr3.value + '(' + o_reg.get_register(self.opr2.value) + ')')
+					new_opr = MIPS_Operand(ASM_TYPE['Base_Idx_Disp'], self.opr3.value + '(' + o_reg.get_register(self.opr2.value) + ')')
 					o_reg.set_register(self.opr1.value, new_opr.convert(o_reg))
 				else:
 					# addit opr1, v0, opr3
@@ -128,7 +128,7 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 
 			elif self.opr2.type == ASM_TYPE['Imm']:
 				if self.opr2.feature == OPND_FEATURE['Addr_Imm']:
-					new_opr = Operand(ASM_TYPE['Base_Idx_Disp'], self.opr2.value + '(' + self.opr1.value + ')')
+					new_opr = MIPS_Operand(ASM_TYPE['Base_Idx_Disp'], self.opr2.value + '(' + self.opr1.value + ')')
 					cvt_opr = new_opr.convert(o_reg)
 					if asmutils.have_string(cvt_opr):
 						c_string = asmutils.get_string(cvt_opr)

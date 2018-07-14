@@ -8,7 +8,10 @@ from base.error import *
 import idautils
 import idc
 
-VERSION = 0.7
+VERSION = 0.8
+
+NEXTLINE = '\n'
+TAB = '    '
 
 '''
 get reference list in function
@@ -31,12 +34,14 @@ def get_refer_list(start=None, end=None):
 					func_ref_list.append(temp_ref_list[i])
 
 	# Deduplication
-	func_ref_list = list(set(func_ref_list))
+	temp_ref_list = list(set(func_ref_list))
+	func_ref_list = list()
 
-	# Check range between start and end
-	for ref in func_ref_list:
-		if ref < start or ref >= end:
-			func_ref_list.remove(ref)
+	for ref in temp_ref_list:
+		if ref >= start and ref < end:
+			func_ref_list.append(ref)
+
+	func_ref_list.sort()
 
 	return func_ref_list
 
@@ -100,7 +105,4 @@ def hex_ray_mips():
 		fh.write(func.function(func_contents))
 
 if __name__ == '__main__':
-	NEXTLINE = '\n'
-	TAB = '    '
-
 	hex_ray_mips()
