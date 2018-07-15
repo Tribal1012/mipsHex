@@ -66,6 +66,11 @@ class MIPS_Operand(Operand):
 		if match:
 			return OPND_FEATURE['Imm_Imm_Reg']
 
+		# e.g) 0x30+offset($sp)
+		match = re.match(r"^([0-9a-fA-Fx]+)\+([0-9a-zA-Z]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
+		if match:
+			return OPND_FEATURE['Imm_Imm_Reg']
+
 		# e.g) 0x30+var_C
 		match = re.match(r"^([0-9a-fA-Fx]+)\+[varg]{3}_([0-9a-fA-F]+)$", self.value)
 		if match:
@@ -129,6 +134,11 @@ class MIPS_Operand(Operand):
 			if match:
 				return (match.group(1), match.group(2), match.group(3), match.group(4))
 
+			# e.g) 0x30+offset($sp)
+			match = re.match(r"^([0-9a-fA-Fx]+)\+([0-9a-zA-Z]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
+			if match:
+				return (match.group(1), match.group(2), match.group(2), match.group(3))
+				
 		elif self._feature == OPND_FEATURE['Imm_Imm']:
 			# e.g) 0x30+var_C
 			match = re.match(r"^([0-9a-fA-Fx]+)\+([varg]{3}_([0-9a-fA-F]+))$", self.value)
