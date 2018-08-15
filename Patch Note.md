@@ -1,6 +1,15 @@
 # Patch Note
 
 
+ver 0.9
+
+- fix printing a next line process on all conditional branchs 
+
+- change to use local variables on some instructions
+
+- add the CustomHex object on hex-ray.py
+
+
 ver 0.8
 
 - add mips assembly(about set)

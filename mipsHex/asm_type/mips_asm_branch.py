@@ -29,21 +29,22 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		line += o_func.get_comment(prefix='[branch]', opr1=self.opr1.value) + '\n    '
 		line += 'goto ' + self.opr1.value + ';'
 
-		return line, self.next_addr
+		return line, self.next_addr#idc.PrevHead(idc.LocByName(self.opr1.value))
 
 	# branch equal zero instruction
 	def do_beqz(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != beqz".format(hex(self.addr), self.ins), self.ins == 'beqz')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += '!' + o_reg.get_register(self.opr1.value)
-		line += ') ' + self.opr2.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 
@@ -51,15 +52,16 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_bnez(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bnez".format(hex(self.addr), self.ins), self.ins == 'bnez')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value)
-		line += ') ' + self.opr2.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 	
@@ -67,17 +69,18 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_beq(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != beq".format(hex(self.addr), self.ins), self.ins == 'beq')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr2.value), opr3=self.opr2.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' == ' + o_reg.get_register(self.opr2.value)
-		line += ') ' + self.opr3.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr3.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 
@@ -85,17 +88,18 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_bne(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bne".format(hex(self.addr), self.ins), self.ins == 'bne')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr2.value), opr3=self.opr2.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' != ' + o_reg.get_register(self.opr2.value)
-		line += ') ' + self.opr3.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr3.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 
@@ -103,15 +107,16 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_bltz(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bltz".format(hex(self.addr), self.ins), self.ins == 'bltz')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' < 0'
-		line += ') ' + self.opr2.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 
@@ -119,15 +124,16 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_bgtz(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bgtz".format(hex(self.addr), self.ins), self.ins == 'bgtz')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' > 0'
-		line += ') ' + self.opr2.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 
@@ -135,15 +141,16 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_bgez(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bgez".format(hex(self.addr), self.ins), self.ins == 'bgez')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' >= 0'
-		line += ') ' + self.opr2.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 
@@ -151,15 +158,16 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_blez(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != blez".format(hex(self.addr), self.ins), self.ins == 'blez')
 
-		line = ''
-		if self.next_result is not None:
-			line = self.next_result
-			line += '\n    '
-		line += o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
+		line = o_func.get_comment(prefix='[branch]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		line += '\n    '
 		line += 'if('
 		line += o_reg.get_register(self.opr1.value) + ' <= 0'
-		line += ') ' + self.opr2.value + ';'
+		line += ') {'
+		line += '\n        '
+		if self.next_result is not None:
+			line += self.next_result
+			line += '\n        '
+		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
 
 		return line, self.next_addr
 

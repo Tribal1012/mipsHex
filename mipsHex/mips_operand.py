@@ -176,15 +176,18 @@ class MIPS_Operand(Operand):
 		if parsed is None:
 			return self._value
 
+		# e.g) reg
 		if self._feature == OPND_FEATURE['Reg']:
 			if o_reg:
 				return o_reg.get_register(parsed[0])
 			else:
 				return parsed[0]
 
+		# e.g) 0xC
 		elif self._feature == OPND_FEATURE['Imm']:
 			return parsed[0]
 
+		# e.g) (aAddr - 0xC)($a0)
 		elif self._feature == OPND_FEATURE['Addr_Imm_Reg']:
 			reg = o_reg.get_register(parsed[2])
 			try:
@@ -200,6 +203,7 @@ class MIPS_Operand(Operand):
 
 			return hex(idc.LocByName(reg) + addr + imm).replace('L', '')
 
+		# e.g) (aAddr+0xC - 0xC)($a0)
 		elif self._feature == OPND_FEATURE['Addr_Offset_Imm_Reg']:
 			reg = o_reg.get_register(parsed[3])
 			if self.is_expand_operand(reg, parsed[2]):
@@ -211,31 +215,36 @@ class MIPS_Operand(Operand):
 
 			return hex(idc.LocByName(reg) + addr + offset + imm).replace('L', '')
 
+		# e.g) (aAddr - 0xC)
 		elif self._feature == OPND_FEATURE['Addr_Imm']:
 			if len(parsed) == 3:
 				return hex(idc.LocByName(parsed[0]) + int(parsed[1], 16) + int(parsed[2], 16)).replace('L', '')
 			else:
 				return hex(idc.LocByName(parsed[0]) + int(parsed[1], 16)).replace('L', '')
 
+		# e.g) 0xC($a0)
 		elif self._feature == OPND_FEATURE['Reg_Imm']:
 			if not o_reg.has_register(parsed[1]):
-				return '*({0}+{1})'.format(parsed[1], parsed[0])
+				return '*({0} + {1})'.format(parsed[1], parsed[0])
 			else:
 				try:
 					reg = int(o_reg.get_register(parsed[1]), 16)
 				except ValueError:
-					return '*({0}+{1})'.format(parsed[1], parsed[0])
+					return '*({0} + {1})'.format(o_reg.get_register(parsed[1]), parsed[0])
 
 				imm = int(parsed[0], 16)
 
 				return hex(reg + imm).replace('L', '')
 
+		# e.g) 0x30+var_C($sp)
 		elif self._feature == OPND_FEATURE['Imm_Imm_Reg']:
 			return parsed[1]
 
+		# e.g) 0x30+var_C
 		elif self._feature == OPND_FEATURE['Imm_Imm']:
 			return hex(int(parsed[1], 16) - int(parsed[3], 16))
 
+		# e.g) aAddr
 		elif self._feature == OPND_FEATURE['Addr']:
 			return parsed[0]
 

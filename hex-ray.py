@@ -4,105 +4,163 @@ import mipsHex.mips_register as mips_register
 from mipsHex.mips_asmutils import asmutils
 
 from base.error import *
+from base.define import ASM_TYPE
 
 import idautils
 import idc
 
-VERSION = 0.8
+VERSION = 0.9
 
 NEXTLINE = '\n'
 TAB = '    '
 
-'''
-get reference list in function
-'''
-def get_refer_list(start=None, end=None):
-	func_ref_list = list()
-	if start != BADADDR:
-		for item in FuncItems(start):
-			# Check reference
-			cross_refs = CodeRefsFrom(item, 1)
+ARCHITECTURE = {
+	'MIPS':0x0
+}
+class CustomHex:
+	def __init__(self, arc):
+		global NEXTLINE
+		global TAB
 
-			temp_ref_list = list()
-			# Convert from generator to list
-			for ref in cross_refs:
-				temp_ref_list.append(ref)
-
-			# Collect ref_lists except temp_ref_list[0](next address)
-			if len(temp_ref_list) >= 2:
-				for i in range(1, len(temp_ref_list), 1):
-					func_ref_list.append(temp_ref_list[i])
-
-	# Deduplication
-	temp_ref_list = list(set(func_ref_list))
-	func_ref_list = list()
-
-	for ref in temp_ref_list:
-		if ref >= start and ref < end:
-			func_ref_list.append(ref)
-
-	func_ref_list.sort()
-
-	return func_ref_list
-
-'''
-append a reference address
-'''
-def append_refer_addr(addr, ref_list, to):
-	if addr in ref_list:
-		to += NEXTLINE
-		to += 'loc_' + hex(addr)[2:-1].upper() + ':'
-
-	return to
-'''
-append new line
-'''
-def append_new_line(line, to):
-	if line:
-		to += NEXTLINE + TAB + line
-
-	return to
-
-'''
-main function for mips hex-ray
-'''
-def hex_ray_mips():
-	global NEXTLINE
-	global TAB
-
-	# Create a mips function object for hex-ray
-	func = mips_function.MIPS_Function()
-	reg = mips_register.MIPS_Register()
-	asm = mips_asm.MIPS_IAsm()
-
-	# Get current function's name and address using ida python
-	func_name, func_addr = func.init_func()
-	func_contents = ''
-
-	print "[+] Function name : " + func_name
-	print "[+] Function address : " + hex(func_addr[0])
-
-	func_ref_list = get_refer_list(func_addr[0], func_addr[1])
-
-	haslocal = False
-	current = func_addr[0]
-	while current <= func_addr[1]:
-		# Write reference addresses
-		func_contents = append_refer_addr(current, func_ref_list, func_contents)
-
-		# assmbly dispatch
-		line, n_addr = asm.dispatch(current, reg, func)
-
-		# apply dispatch result
-		func_contents = append_new_line(line, func_contents)
-
-		if n_addr:
-			current = idc.NextHead(n_addr, func_addr[1])
+		if arc == ARCHITECTURE['MIPS']:
+			self.arc = ARCHITECTURE['MIPS']
+			self.func = mips_function.MIPS_Function()
+			self.reg = mips_register.MIPS_Register()
+			self.asm = mips_asm.MIPS_IAsm()
 		else:
-			current = idc.NextHead(current, func_addr[1])
+			self.arc = None
+			self.func = None
+			self.reg = None
+			self.asm = None
 
-	with open(func_name + ".c", "w") as fh:
-		fh.write(func.function(func_contents))
+	def AppendRefAddr(self, addr, ref_list, to):
+		if addr in ref_list:
+			to += NEXTLINE
+			to += 'loc_' + hex(addr)[2:-1].upper() + ':'
+
+		return to
+
+	def AppendNewLine(self, line, to):
+		if line:
+			to += NEXTLINE + TAB + line
+
+		return to
+
+	def GetRefList(self, start=None, end=None):
+		func_ref_list = list()
+		if start != BADADDR:
+			for item in FuncItems(start):
+				# Check reference
+				cross_refs = CodeRefsFrom(item, 1)
+
+				temp_ref_list = list()
+				# Convert from generator to list
+				for ref in cross_refs:
+					temp_ref_list.append(ref)
+
+				# Collect ref_lists except temp_ref_list[0](next address)
+				if len(temp_ref_list) >= 2:
+					for i in range(1, len(temp_ref_list), 1):
+						func_ref_list.append(temp_ref_list[i])
+
+		# Deduplication
+		temp_ref_list = list(set(func_ref_list))
+		func_ref_list = list()
+
+		for ref in temp_ref_list:
+			if ref >= start and ref < end:
+				func_ref_list.append(ref)
+
+		func_ref_list.sort()
+
+		return func_ref_list
+
+	def GetBranchList(self, start=None, end=None):
+		branch_list = list()
+
+		current = start
+		if self.arc == ARCHITECTURE['MIPS']:
+			branch_obj = self.asm.mips_asm_class['branch']
+			jump_obj = self.asm.mips_asm_class['jump']
+
+			while current <= end:
+				method = 'do_' + idc.GetMnem(current)
+				if hasattr(branch_obj, method) or hasattr(jump_obj, method):
+					if idc.GetOpType(current, 0) == ASM_TYPE['Imm_Near_Addr']:
+						opr = idc.LocByName(idc.GetOpnd(current, 0))
+						if opr in self.func_ref_list:
+							branch_list.append(hex(opr))
+					elif idc.GetOpType(current, 1) == ASM_TYPE['Imm_Near_Addr']:
+						opr = idc.LocByName(idc.GetOpnd(current, 1))
+						if opr in self.func_ref_list:
+							branch_list.append(hex(opr))
+					elif idc.GetOpType(current, 2) == ASM_TYPE['Imm_Near_Addr']:
+						opr = idc.LocByName(idc.GetOpnd(current, 2))
+						if opr in self.func_ref_list:
+							branch_list.append(hex(opr))
+
+				current = idc.NextHead(current, end)
+
+		branch_list = list(set(branch_list))
+		branch_list.sort()
+
+		return branch_list
+
+	def ComputeBranchLink(self, start, end):
+		branch_link = dict()
+		branch_link[hex(start)] = self.GetBranchList(start, self.func_ref_list[0])
+		for i in range(len(self.func_ref_list)):
+			if i == len(self.func_ref_list)-1:
+				branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], end)
+			else:
+				branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], self.func_ref_list[i+1])
+
+		return branch_link
+
+	def GetFuncInfo(self):
+		# Get current function's name and address using ida python
+		func_name, func_addr = self.func.init_func()
+		
+		print "[+] Function name : " + func_name
+		print "[+] Function address : " + hex(func_addr[0])
+
+		self.func_ref_list = self.GetRefList(func_addr[0], func_addr[1])
+
+		return func_name, func_addr
+
+	def hex_ray(self, start, end):
+		contents = ''
+
+		current = start
+		while current <= end:
+			# Write reference addresses
+			contents = self.AppendRefAddr(current, self.func_ref_list, contents)
+
+			# assmbly dispatch
+			line, n_addr = self.asm.dispatch(current, self.reg, self.func)
+
+			# apply dispatch result
+			contents = self.AppendNewLine(line, contents)
+
+			if n_addr:
+				current = idc.NextHead(n_addr, end)
+			else:
+				current = idc.NextHead(current, end)
+
+		return contents
+
+	def mips(self):
+		func_name, func_addr = self.GetFuncInfo()
+
+		branch_link =  o_hex.ComputeBranchLink(func_addr[0], func_addr[1])
+		# print branch_link
+
+		func_contents = self.hex_ray(func_addr[0], func_addr[1])
+
+		with open(func_name + ".c", "w") as fh:
+			fh.write(self.func.function(func_contents))
 
 if __name__ == '__main__':
-	hex_ray_mips()
+	o_hex = CustomHex(ARCHITECTURE['MIPS'])
+
+	o_hex.mips()

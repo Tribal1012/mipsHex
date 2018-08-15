@@ -28,7 +28,7 @@ class MIPS_Asm_Jump(MIPS_Asm):
 		comment += o_func.get_comment(prefix='[jump]', opr1=self.opr1.value) + '\n    '
 		line = 'goto ' + self.opr1.value + ';'
 
-		return comment + line, self.next_addr
+		return comment + line, self.next_addr# idc.PrevHead(idc.LocByName(self.opr1.value))
 
 	# jump + address + linked instruction
 	def do_jal(self, o_reg, o_func):
@@ -39,7 +39,7 @@ class MIPS_Asm_Jump(MIPS_Asm):
 		line = self.opr1.value
 		line += '('
 		line += o_reg.get_func_arg()
-		line += ')'
+		line += ')' + ';'
 
 		if asmutils.check_use_return(self.next_addr):
 			o_reg.set_register('$v0', 'v0_' + self.opr1.value)
@@ -76,7 +76,7 @@ class MIPS_Asm_Jump(MIPS_Asm):
 		line = o_reg.get_register(self.opr1.value)
 		line += '('
 		line += o_reg.get_func_arg()
-		line += ')'
+		line += ')' + ';'
 
 		if asmutils.check_use_return(self.next_addr):
 			o_reg.set_register('$v0', 'v0_' + o_reg.get_register(self.opr1.value))

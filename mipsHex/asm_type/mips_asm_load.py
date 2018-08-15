@@ -15,12 +15,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_lb(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lb".format(hex(self.addr), self.ins), self.ins == 'lb')
 
-		var_name = self.opr2.convert(o_reg)
-
-		if o_func.get_local_var(var_name) is not None:
-			var = o_func.get_local_var(var_name)
-		else:
-			var = var_name
+		var = self.opr2.convert(o_reg)
 
 		o_reg.set_register(self.opr1.value, '((int8_t)' + var + ')')
 
@@ -32,12 +27,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_lbu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lbu".format(hex(self.addr), self.ins), self.ins == 'lbu')
 
-		var_name = self.opr2.convert(o_reg)
-
-		if o_func.get_local_var(var_name) is not None:
-			var = o_func.get_local_var(var_name)
-		else:
-			var = var_name
+		var = self.opr2.convert(o_reg)
 
 		o_reg.set_register(self.opr1.value, '((uint8_t)' + var + ')')
 
@@ -49,12 +39,12 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_lhu(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lhu".format(hex(self.addr), self.ins), self.ins == 'lhu')
 
-		var_name = self.opr2.convert(o_reg)
+		var = self.opr2.convert(o_reg)
 
-		if o_func.get_local_var(var_name) is not None:
-			var = o_func.get_local_var(var_name)
+		if o_func.get_local_var(var) is not None:
+			var = o_func.get_local_var(var)
 		else:
-			var = var_name
+			var = var
 
 		o_reg.set_register(self.opr1.value, '((uint16_t)' + var + ')')
 
@@ -66,12 +56,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_lh(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lh".format(hex(self.addr), self.ins), self.ins == 'lh')
 
-		var_name = self.opr2.convert(o_reg)
-
-		if o_func.get_local_var(var_name) is not None:
-			var = o_func.get_local_var(var_name)
-		else:
-			var = var_name
+		var = self.opr2.convert(o_reg)
 
 		o_reg.set_register(self.opr1.value, '((int16_t)' + var + ')')
 
@@ -83,12 +68,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_lw(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lw".format(hex(self.addr), self.ins), self.ins == 'lw')
 
-		var_name = self.opr2.convert(o_reg)
-
-		if o_func.get_local_var(var_name) is not None:
-			var = o_func.get_local_var(var_name)
-		else:
-			var = var_name
+		var = self.opr2.convert(o_reg)
 
 		o_reg.set_register(self.opr1.value, var)
 
@@ -133,12 +113,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 	def do_ulw(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != lw".format(hex(self.addr), self.ins), self.ins == 'lw')
 
-		var_name = self.opr2.convert(o_reg)
-
-		if o_func.get_local_var(var_name) is not None:
-			var = o_func.get_local_var(var_name)
-		else:
-			var = var_name
+		var = self.opr2.convert(o_reg)
 
 		o_reg.set_register(self.opr1.value, var)
 
