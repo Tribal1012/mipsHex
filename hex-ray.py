@@ -149,15 +149,20 @@ class CustomHex:
 
 		return contents
 
-	def mips(self):
+	def mips(self, path=None):
 		func_name, func_addr = self.GetFuncInfo()
 
-		branch_link =  o_hex.ComputeBranchLink(func_addr[0], func_addr[1])
+		branch_link =  self.ComputeBranchLink(func_addr[0], func_addr[1])
 		# print branch_link
 
 		func_contents = self.hex_ray(func_addr[0], func_addr[1])
 
-		with open(func_name + ".c", "w") as fh:
+		if path:
+			filename = path + '\\' + func_name + ".c"
+		else:
+			filename = func_name + ".c"
+
+		with open(filename, "w") as fh:
 			fh.write(self.func.function(func_contents))
 
 if __name__ == '__main__':
