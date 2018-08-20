@@ -164,12 +164,16 @@ class MIPS_Operand(Operand):
 			self._feature == OPND_FEATURE['Addr_Imm_Reg'] or self._feature == OPND_FEATURE['Addr_Offset_Imm_Reg'])
 		check_assert("[-] Check reg value, {0} == o_reg.get_register({1})".format(reg, reg), idc.LocByName(reg) != 0xffffffff)
 
-		if idc.LocByName(reg) + int(imm, 16) == 0:
+		try:
+			if idc.LocByName(reg) + int(imm, 16) == 0:
+				return True
+			elif int(reg, 16) + int(imm, 16) == 0:
+				return True
+			else:
+				return False
+		except TypeError:
+			print "[-] Unknown IDA error, Accept to omit a operand"
 			return True
-		elif int(reg, 16) + int(imm, 16) == 0:
-			return True
-		else:
-			return False
 
 	def convert(self, o_reg=None):
 		parsed = self.parse()

@@ -36,15 +36,18 @@ class MIPS_Asm_Jump(MIPS_Asm):
 
 		comment =  o_func.get_comment(prefix='[call]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		comment += '\n    '
+
+		arg_count = o_reg.get_func_arg_count(self.addr)
 		line = self.opr1.value
 		line += '('
-		line += o_reg.get_func_arg()
+		line += o_reg.get_func_arg()#arg_count)
 		line += ')' + ';'
 
 		if asmutils.check_use_return(self.next_addr):
 			o_reg.set_register('$v0', 'v0_' + self.opr1.value)
-			comment += '\n    '
+			comment += '$v0 = '
 			comment += line
+			comment += '\n    '
 			comment += o_func.get_comment(prefix='[return value]', opr1='$v0', opr2=line)
 			
 			return comment, self.next_addr
@@ -75,15 +78,18 @@ class MIPS_Asm_Jump(MIPS_Asm):
 
 		comment =  o_func.get_comment(prefix='[call]', opr2=o_reg.get_register(self.opr1.value), opr3=self.opr1.value, operation='<--') 
 		comment += '\n    '
+
+		arg_count = o_reg.get_func_arg_count(self.addr)
 		line = o_reg.get_register(self.opr1.value)
 		line += '('
-		line += o_reg.get_func_arg()
+		line += o_reg.get_func_arg()#arg_count)
 		line += ')' + ';'
 
 		if asmutils.check_use_return(self.next_addr):
 			o_reg.set_register('$v0', 'v0_' + o_reg.get_register(self.opr1.value))
-			comment += '\n    '
+			comment += '$v0 = '
 			comment += line
+			comment += '\n    '
 			comment += o_func.get_comment(prefix='[return value]', opr1='$v0', opr2=line)
 
 			return comment, self.next_addr

@@ -21,6 +21,6 @@ class Register(object):
 		pass
 
 	@abstractmethod
-	def get_func_arg(self):
+	def get_func_arg(self, count=None):
 		pass
 		

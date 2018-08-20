@@ -194,8 +194,9 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		if self.get_operand_count() == 2:
 			opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
-
 			o_reg.set_register(self.opr1.value, '- (' + opr2 + ')')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2='- (' + opr2 + ')')
 
 		else:
 			error("[-] address({0}), Not defined negu".format(hex(self.addr)))
@@ -209,8 +210,9 @@ class MIPS_Asm_Bits(MIPS_Asm):
 
 		if self.get_operand_count() == 2:
 			opr2 = o_reg.get_reigster(self.opr2.value) if self.opr2.type == ASM_TYPE['Gen_Reg'] else self.opr2.value
+			o_reg.set_register(self.opr1.value, '!(' + opr2 + ')')
 
-			o_reg.set_register(self.opr1.value, '~ (' + opr2 + ')')
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2='!(' + opr2 + ')')
 
 		else:
 			error("[-] address({0}), Not defined not".format(hex(self.addr)))

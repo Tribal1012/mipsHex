@@ -4,7 +4,10 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
+from base.error import error, check_assert
 import base.register as br
+
+import idc
 
 '''
 	Store mips register information
@@ -17,6 +20,7 @@ import base.register as br
 	get_func_arg : get function arguments list from mips argument registers
 	isargument : Is this register argument register?
 	issaved : Is this register saved register?
+	get_func_arg_count : util for get_func_arg method
 '''
 class MIPS_Register(br.Register):
 	def __init__(self):
@@ -54,7 +58,7 @@ class MIPS_Register(br.Register):
 				if key == register:
 					line[key] = value
 
-	def get_func_arg(self):
+	def get_func_arg(self, count=None):
 		arguments = list()
 		for value in self.mips_argument_register.values():
 			if value is None:
@@ -62,7 +66,11 @@ class MIPS_Register(br.Register):
 			else:
 				arguments.append(value)
 
-		return str(arguments).replace('\'', '')[1:-1]
+		if count is None or count > 4 :
+			return str(arguments).replace('\'', '')[1:-1]
+		else:
+			arguments = arguments[:count]
+			return str(arguments).replace('\'', '')[1:-1]
 
 	def isargument(self, register):
 		return True if register in self.mips_argument_register.keys() else False
@@ -70,3 +78,19 @@ class MIPS_Register(br.Register):
 	def issaved(self, register):
 		return True if register in self.mips_saved_register.keys() else False
 
+	def get_func_arg_count(self, addr):
+		check_assert("[-] Invalid next_addr : {0}".format(hex(addr)), idc.GetMnem(addr) in ('jal', 'jalr'))
+
+		next_addr = idc.NextHead(addr)
+		
+		ins = idc.GetMnem(next_addr)
+		org1 = idc.GetOpnd(next_addr, 0)
+
+		if ins == 'nop':
+			return 0
+
+		if self.isargument(org1):
+			return int(org[2])
+		else:
+			# unknown function arguments
+			return 4
