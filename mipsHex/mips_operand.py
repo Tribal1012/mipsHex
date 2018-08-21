@@ -66,6 +66,11 @@ class MIPS_Operand(Operand):
 		if match:
 			return OPND_FEATURE['Imm_Imm_Reg']
 
+		# e.g) 0x30+var_C+1($sp)
+		match = re.match(r"^([0-9a-fA-Fx]+)\+[varg]{3}_([0-9a-fA-F]+)[+-][0-9a-fA-F]+\(([$0-9a-zA-Z]{3})\)$", self.value)
+		if match:
+			return OPND_FEATURE['Imm_Imm_Reg']
+
 		# e.g) 0x30+offset($sp)
 		match = re.match(r"^([0-9a-fA-Fx]+)\+([0-9a-zA-Z]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
 		if match:
@@ -73,6 +78,11 @@ class MIPS_Operand(Operand):
 
 		# e.g) 0x30+var_C
 		match = re.match(r"^([0-9a-fA-Fx]+)\+[varg]{3}_([0-9a-fA-F]+)$", self.value)
+		if match:
+			return OPND_FEATURE['Imm_Imm']
+
+		# e.g) 0x30+var_C+1
+		match = re.match(r"^([0-9a-fA-Fx]+)\+[varg]{3}_([0-9a-fA-F]+)[+-][0-9a-fA-F]+$", self.value)
 		if match:
 			return OPND_FEATURE['Imm_Imm']
 
@@ -134,6 +144,11 @@ class MIPS_Operand(Operand):
 			if match:
 				return (match.group(1), match.group(2), match.group(3), match.group(4))
 
+			# e.g) 0x30+var_C+1($sp)
+			match = re.match(r"^([0-9a-fA-Fx]+)\+([varg]{3}_([0-9a-fA-F]+)[+-][0-9a-fA-F]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
+			if match:
+				return (match.group(1), match.group(2), match.group(3), match.group(4))
+
 			# e.g) 0x30+offset($sp)
 			match = re.match(r"^([0-9a-fA-Fx]+)\+([0-9a-zA-Z]+)\(([$0-9a-zA-Z]{3})\)$", self.value)
 			if match:
@@ -144,6 +159,11 @@ class MIPS_Operand(Operand):
 			match = re.match(r"^([0-9a-fA-Fx]+)\+([varg]{3}_([0-9a-fA-F]+))$", self.value)
 			if match:
 				return (match.group(1), match.group(2), match.group(3))
+
+			# e.g) 0x30+var_C+1
+			match = re.match(r"^([0-9a-fA-Fx]+)\+([varg]{3}_([0-9a-fA-F]+))([+-][0-9a-fA-F]+)$", self.value)
+			if match:
+				return (hex(int(match.group(1), 16) + int(match.group(4), 16)), match.group(2), match.group(3))
 
 		elif self._feature == OPND_FEATURE['Addr']:
 			# e.g) aAddr
@@ -171,7 +191,7 @@ class MIPS_Operand(Operand):
 				return True
 			else:
 				return False
-		except TypeError:
+		except ValueError:
 			print "[-] Unknown IDA error, Accept to omit a operand"
 			return True
 
@@ -246,7 +266,7 @@ class MIPS_Operand(Operand):
 
 		# e.g) 0x30+var_C
 		elif self._feature == OPND_FEATURE['Imm_Imm']:
-			return hex(int(parsed[1], 16) - int(parsed[3], 16))
+			return hex(int(parsed[0], 16) - int(parsed[2], 16))
 
 		# e.g) aAddr
 		elif self._feature == OPND_FEATURE['Addr']:

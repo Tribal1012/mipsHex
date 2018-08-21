@@ -30,6 +30,25 @@ class MIPS_Asm_Set(MIPS_Asm):
 
 		return comment, None
 
+	# set equal immediate instruction
+	def do_seqi(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != seqi".format(hex(self.addr), self.ins), self.ins == 'seqi')
+
+		if self.get_operand_count() == 3:
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr2.value) + '==' + self.opr3.value + ')? True:False')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register(self.opr2.value), opr3=self.opr3.value + '? True:False', operation='<')
+
+		elif self.get_operand_count() == 2:
+			o_reg.set_register(self.opr1.value, '(' + o_reg.get_register(self.opr1.value) + '==' + self.opr2.value + ')? True:False')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2=o_reg.get_register(self.opr1.value), opr3=self.opr2.value + '? True:False', operation='<')
+		
+		else:
+			error("[-] address({0}), Not defined seqi".format(hex(self.addr)))
+
+		return comment, None
+
 	# set not equal instruction
 	def do_sne(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != sne".format(hex(self.addr), self.ins), self.ins == 'sne')

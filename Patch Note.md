@@ -1,6 +1,19 @@
 # Patch Note
 
 
+ver 0.10
+
+- add mips assembly
+
+- fix some errors
+
+- modify to copy a register object about branch
+
+- support new operand feature Imm+Imm+Reg (0x30 + var_C+1($sp))
+
+- support new operand feature Imm+Imm (0x30 + var_C+1)
+
+
 ver 0.9
 
 - fix printing a next line process on all conditional branchs 

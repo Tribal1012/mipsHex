@@ -90,7 +90,7 @@ class MIPS_Register(br.Register):
 			return 0
 
 		if self.isargument(org1):
-			return int(org[2])
+			return int(org1[2])
 		else:
 			# unknown function arguments
 			return 4

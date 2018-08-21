@@ -9,7 +9,7 @@ from base.define import ASM_TYPE
 import idautils
 import idc
 
-VERSION = 0.9
+VERSION = 0.10
 
 NEXTLINE = '\n'
 TAB = '    '
@@ -108,12 +108,15 @@ class CustomHex:
 
 	def ComputeBranchLink(self, start, end):
 		branch_link = dict()
-		branch_link[hex(start)] = self.GetBranchList(start, self.func_ref_list[0])
-		for i in range(len(self.func_ref_list)):
-			if i == len(self.func_ref_list)-1:
-				branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], end)
-			else:
-				branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], self.func_ref_list[i+1])
+		if len(self.func_ref_list) != 0:
+			branch_link[hex(start)] = self.GetBranchList(start, self.func_ref_list[0])
+			for i in range(len(self.func_ref_list)):
+				if i == len(self.func_ref_list)-1:
+					branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], end)
+				else:
+					branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], self.func_ref_list[i+1])
+		else:
+			branch_link[hex(start)] = list()
 
 		return branch_link
 

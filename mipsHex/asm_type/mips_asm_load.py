@@ -111,7 +111,7 @@ class MIPS_Asm_Load(MIPS_Asm):
 
 	# unaligned load word instruction
 	def do_ulw(self, o_reg, o_func):
-		check_assert("[-] Check ins, current({0}) : {1} != lw".format(hex(self.addr), self.ins), self.ins == 'lw')
+		check_assert("[-] Check ins, current({0}) : {1} != ulw".format(hex(self.addr), self.ins), self.ins == 'ulw')
 
 		var = self.opr2.convert(o_reg)
 

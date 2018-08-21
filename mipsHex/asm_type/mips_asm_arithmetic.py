@@ -350,3 +350,51 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 		comment = o_func.get_comment(opr1='$hi, $lo', opr2=o_reg.get_register(self.opr1.value), opr3=opr2, operation='*')
 
 		return comment, None
+
+	# sign extend byte
+	def do_seb(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != seb".format(hex(self.addr), self.ins), self.ins == 'seb')
+
+		if self.get_operand_count() == 2:
+			check_assert("[-] Check opr2, current({0})".format(hex(self.addr)), self.opr2.type == ASM_TYPE['Gen_Reg'])
+			check_assert("[-] Check opr1, current({0})".format(hex(self.addr)), self.opr1.type == ASM_TYPE['Gen_Reg'])
+			
+			o_reg.set_register(self.opr1.value, '(int8_t)(' + o_reg.get_register(self.opr2.value) + ')')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2='(int8_t)(' + o_reg.get_register(self.opr2.value) + ')')
+
+		elif self.get_operand_count() == 1:
+			check_assert("[-] Check opr1, current({0})".format(hex(self.addr)), self.opr1.type == ASM_TYPE['Gen_Reg'])
+			
+			o_reg.set_register(self.opr1.value, '(int8_t)(' + o_reg.get_register(self.opr1.value) + ')')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2='(int8_t)(' + o_reg.get_register(self.opr1.value) + ')')
+
+		else:
+			error("[-] current({0}), Not defined seb".format(hex(self.addr)))
+
+		return comment, None
+
+	# sign extend half word
+	def do_seh(self, o_reg, o_func):
+		check_assert("[-] Check ins, current({0}) : {1} != seh".format(hex(self.addr), self.ins), self.ins == 'seh')
+
+		if self.get_operand_count() == 2:
+			check_assert("[-] Check opr2, current({0})".format(hex(self.addr)), self.opr2.type == ASM_TYPE['Gen_Reg'])
+			check_assert("[-] Check opr1, current({0})".format(hex(self.addr)), self.opr1.type == ASM_TYPE['Gen_Reg'])
+			
+			o_reg.set_register(self.opr1.value, '(int16_t)(' + o_reg.get_register(self.opr2.value) + ')')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2='(int16_t)(' + o_reg.get_register(self.opr2.value) + ')')
+
+		elif self.get_operand_count() == 1:
+			check_assert("[-] Check opr1, current({0})".format(hex(self.addr)), self.opr1.type == ASM_TYPE['Gen_Reg'])
+			
+			o_reg.set_register(self.opr1.value, '(int16_t)(' + o_reg.get_register(self.opr1.value) + ')')
+
+			comment = o_func.get_comment(opr1=self.opr1.value, opr2='(int16_t)(' + o_reg.get_register(self.opr1.value) + ')')
+
+		else:
+			error("[-] current({0}), Not defined seh".format(hex(self.addr)))
+
+		return comment, None
