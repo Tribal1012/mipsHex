@@ -169,6 +169,13 @@ class CustomHex:
 			fh.write(self.func.function(func_contents))
 
 if __name__ == '__main__':
-	o_hex = CustomHex(ARCHITECTURE['MIPS'])
+	DEBUG = False
 
-	o_hex.mips()
+	o_hex = CustomHex(ARCHITECTURE['MIPS'])
+	if DEBUG:
+		o_hex.GetFuncInfo()
+
+		print o_hex.asm.dispatch(here(), o_hex.reg, o_hex.func)
+		print o_hex.reg.mips_saved_register
+	else:
+		o_hex.mips()

@@ -101,13 +101,13 @@ class MIPS_Operand(Operand):
 			# e.g) reg
 			match = re.match(r"^(\$[0-9a-zA-Z]{2,4})$", self.value)
 			if match:
-				return (match.group(1))
+				return (match.group(1),)
 
 		elif self._feature == OPND_FEATURE['Imm']:
 			# e.g) 0xC
 			match = re.match(r"^(0x[0-9a-fA-F]+)$", self.value)
 			if match:
-				return (match.group(1))
+				return (match.group(1),)
 
 		elif self._feature == OPND_FEATURE['Addr_Imm_Reg']:
 			# e.g) (aAddr - 0xC)($a0)
@@ -169,7 +169,7 @@ class MIPS_Operand(Operand):
 			# e.g) aAddr
 			match = re.match(r"^([0-9a-zA-Z_]+)$", self.value)
 			if match:
-				return OPND_FEATURE['Addr']
+				return (match.group(1),)
 
 		elif self._feature == OPND_FEATURE['None']:
 			return None
