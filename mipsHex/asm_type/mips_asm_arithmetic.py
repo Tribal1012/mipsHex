@@ -109,11 +109,13 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 					new_opr = MIPS_Operand(ASM_TYPE['Base_Idx_Disp'], self.opr3.value + '(' + o_reg.get_register(self.opr2.value) + ')')
 					o_reg.set_register(self.opr1.value, new_opr.convert(o_reg))
 				else:
-					# addit opr1, v0, opr3
+					# addiu opr1, v0, opr3
 					reg_val = o_reg.get_register(self.opr2.value)
 					cvt_opr3 = self.opr3.convert(o_reg)
 					if idc.LocByName(reg_val) != 0xffffffff:
 						o_reg.set_register(self.opr1.value, hex(idc.LocByName(reg_val) + int(cvt_opr3, 16)))
+					elif asmutils.isImmediate(reg_val, cvt_opr3):
+						o_reg.set_register(self.opr1.value, '"' + idc.GetString(int(reg_val, 16) + int(cvt_opr3, 16)) + '"')
 					else:
 						o_reg.set_register(self.opr1.value, '(' + reg_val + ' + ' + cvt_opr3 + ')')
 

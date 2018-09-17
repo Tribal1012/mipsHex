@@ -1,6 +1,19 @@
 # Patch Note
 
 
+ver 0.11
+
+- change to follow branch
+
+- add a branch comment
+
+- add a addiu assembly branch (e.g. addiu opr1, $v0, (aAddr + 0x30))
+
+- add a function for check a string that is immediate type on asmutils
+
+- fix lui assembly
+
+
 ver 0.10
 
 - add mips assembly

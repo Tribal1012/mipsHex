@@ -89,4 +89,17 @@ class MIPS_AsmUtils(bau.AsmUtils):
 		
 		return False
 
+	def isImmediate(self, opr1, opr2=None):
+		result = False
+
+		if opr1:
+			match = re.match(r"^([0-9a-fA-Fx]+)$", opr1)
+			result = True if match else False
+
+		if opr2:
+			match = re.match(r"^([0-9a-fA-Fx]+)$", opr2)
+			result = True if match and result else False
+
+		return result
+
 asmutils = MIPS_AsmUtils()

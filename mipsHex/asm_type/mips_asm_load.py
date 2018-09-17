@@ -92,9 +92,9 @@ class MIPS_Asm_Load(MIPS_Asm):
 		check_assert("[-] Check ins, current({0}) : {1} != lui".format(hex(self.addr), self.ins), self.ins == 'lui')
 		check_assert("[-] Check opr2 type, current({0}) : {1} != {2}".format(self.addr, self.opr2.type, ASM_TYPE['Imm']), self.opr2.type == ASM_TYPE['Imm'])
 
-		o_reg.set_register(self.opr1.value, self.opr2.value)
+		o_reg.set_register(self.opr1.value, hex(int(self.opr2.value, 16) * 0x10000))
 
-		comment = o_func.get_comment(opr1=self.opr1.value, opr2=self.opr2.value)
+		comment = o_func.get_comment(opr1=self.opr1.value, opr2=hex(int(self.opr2.value, 16) * 0x10000))
 
 		return comment, None
 

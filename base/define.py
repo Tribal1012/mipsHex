@@ -1,4 +1,11 @@
 '''
+	cpu architectures
+'''
+ARCHITECTURE = {
+	'MIPS':0x0
+}
+
+'''
 	assembly type
 	number is defined in IDA
 '''

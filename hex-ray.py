@@ -4,19 +4,20 @@ import mipsHex.mips_register as mips_register
 from mipsHex.mips_asmutils import asmutils
 
 from base.error import *
-from base.define import ASM_TYPE
+from base.define import ASM_TYPE, ARCHITECTURE
+
+from branch import BranchManager
 
 import idautils
 import idc
 
-VERSION = 0.10
+import Queue
+
+VERSION = 0.11
 
 NEXTLINE = '\n'
 TAB = '    '
 
-ARCHITECTURE = {
-	'MIPS':0x0
-}
 class CustomHex:
 	def __init__(self, arc):
 		global NEXTLINE
@@ -27,16 +28,27 @@ class CustomHex:
 			self.func = mips_function.MIPS_Function()
 			self.reg = mips_register.MIPS_Register()
 			self.asm = mips_asm.MIPS_IAsm()
+			self.bmgr = BranchManager(ARCHITECTURE['MIPS'])
 		else:
 			self.arc = None
 			self.func = None
 			self.reg = None
 			self.asm = None
+			self.bmgr = None
 
 	def AppendRefAddr(self, addr, ref_list, to):
 		if addr in ref_list:
 			to += NEXTLINE
-			to += 'loc_' + hex(addr)[2:-1].upper() + ':'
+			to += NEXTLINE
+			to += 'loc_' + hex(int(addr))[2:].upper() + ':'
+
+			self.bmgr.InsertRegStatus(self.last_branch, self.reg)
+#			try:
+#				ref_list.remove(self.last_branch)
+#			except:
+#				print "[-] Addr : " + hex(self.last_branch)
+
+			self.last_branch = addr
 
 		return to
 
@@ -46,80 +58,6 @@ class CustomHex:
 
 		return to
 
-	def GetRefList(self, start=None, end=None):
-		func_ref_list = list()
-		if start != BADADDR:
-			for item in FuncItems(start):
-				# Check reference
-				cross_refs = CodeRefsFrom(item, 1)
-
-				temp_ref_list = list()
-				# Convert from generator to list
-				for ref in cross_refs:
-					temp_ref_list.append(ref)
-
-				# Collect ref_lists except temp_ref_list[0](next address)
-				if len(temp_ref_list) >= 2:
-					for i in range(1, len(temp_ref_list), 1):
-						func_ref_list.append(temp_ref_list[i])
-
-		# Deduplication
-		temp_ref_list = list(set(func_ref_list))
-		func_ref_list = list()
-
-		for ref in temp_ref_list:
-			if ref >= start and ref < end:
-				func_ref_list.append(ref)
-
-		func_ref_list.sort()
-
-		return func_ref_list
-
-	def GetBranchList(self, start=None, end=None):
-		branch_list = list()
-
-		current = start
-		if self.arc == ARCHITECTURE['MIPS']:
-			branch_obj = self.asm.mips_asm_class['branch']
-			jump_obj = self.asm.mips_asm_class['jump']
-
-			while current <= end:
-				method = 'do_' + idc.GetMnem(current)
-				if hasattr(branch_obj, method) or hasattr(jump_obj, method):
-					if idc.GetOpType(current, 0) == ASM_TYPE['Imm_Near_Addr']:
-						opr = idc.LocByName(idc.GetOpnd(current, 0))
-						if opr in self.func_ref_list:
-							branch_list.append(hex(opr))
-					elif idc.GetOpType(current, 1) == ASM_TYPE['Imm_Near_Addr']:
-						opr = idc.LocByName(idc.GetOpnd(current, 1))
-						if opr in self.func_ref_list:
-							branch_list.append(hex(opr))
-					elif idc.GetOpType(current, 2) == ASM_TYPE['Imm_Near_Addr']:
-						opr = idc.LocByName(idc.GetOpnd(current, 2))
-						if opr in self.func_ref_list:
-							branch_list.append(hex(opr))
-
-				current = idc.NextHead(current, end)
-
-		branch_list = list(set(branch_list))
-		branch_list.sort()
-
-		return branch_list
-
-	def ComputeBranchLink(self, start, end):
-		branch_link = dict()
-		if len(self.func_ref_list) != 0:
-			branch_link[hex(start)] = self.GetBranchList(start, self.func_ref_list[0])
-			for i in range(len(self.func_ref_list)):
-				if i == len(self.func_ref_list)-1:
-					branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], end)
-				else:
-					branch_link[hex(self.func_ref_list[i])] = self.GetBranchList(self.func_ref_list[i], self.func_ref_list[i+1])
-		else:
-			branch_link[hex(start)] = list()
-
-		return branch_link
-
 	def GetFuncInfo(self):
 		# Get current function's name and address using ida python
 		func_name, func_addr = self.func.init_func()
@@ -127,7 +65,10 @@ class CustomHex:
 		print "[+] Function name : " + func_name
 		print "[+] Function address : " + hex(func_addr[0])
 
-		self.func_ref_list = self.GetRefList(func_addr[0], func_addr[1])
+		self.bmgr.InitRefList(func_addr[0], func_addr[1])
+		self.func_ref_list = self.bmgr.func_ref_list
+
+		self.bmgr.InsertRegStatus(func_addr[0], self.reg)
 
 		return func_name, func_addr
 
@@ -135,8 +76,10 @@ class CustomHex:
 		contents = ''
 
 		current = start
-		while current <= end:
-			# Write reference addresses
+		self.last_branch = start
+		while current < end:
+#			if current != start:
+				# Write reference addresses
 			contents = self.AppendRefAddr(current, self.func_ref_list, contents)
 
 			# assmbly dispatch
@@ -150,15 +93,29 @@ class CustomHex:
 			else:
 				current = idc.NextHead(current, end)
 
+		self.bmgr.InsertRegStatus(self.last_branch, self.reg)
+
 		return contents
 
 	def mips(self, path=None):
 		func_name, func_addr = self.GetFuncInfo()
+		branch_process = self.bmgr.ComputeBranchProcess(func_addr)
+		
+		func_contents = ''
+		while branch_process.qsize():
+			try:
+				branch = branch_process.get_nowait()
+			except Queue.Empty:
+				continue
 
-		branch_link =  self.ComputeBranchLink(func_addr[0], func_addr[1])
-		# print branch_link
-
-		func_contents = self.hex_ray(func_addr[0], func_addr[1])
+			self.reg = self.bmgr.GetRegStatus(branch['base'])
+			if self.reg:
+				func_contents += self.hex_ray(branch['start'], branch['end'])
+			elif branch['start'] == branch['base']:
+				self.reg = mips_register.MIPS_Register()
+				func_contents += self.hex_ray(branch['start'], branch['end'])
+			else:
+				branch_process.put_nowait(branch)
 
 		if path:
 			filename = path + '\\' + func_name + ".c"
@@ -173,9 +130,20 @@ if __name__ == '__main__':
 
 	o_hex = CustomHex(ARCHITECTURE['MIPS'])
 	if DEBUG:
-		o_hex.GetFuncInfo()
+		func_name, func_addr = o_hex.GetFuncInfo()
 
-		print o_hex.asm.dispatch(here(), o_hex.reg, o_hex.func)
-		print o_hex.reg.mips_saved_register
+		# print o_hex.asm.dispatch(here(), o_hex.reg, o_hex.func)
+		# print o_hex.reg.mips_saved_register
+
+		bmgr = BranchManager(ARCHITECTURE['MIPS'])
+		bmgr.InitRefList(func_addr[0], func_addr[1])
+		link = bmgr.ComputeBranchLinkEx(func_addr[0], func_addr[1])
+		key_list = link.keys()
+		key_list.sort()
+		for k in key_list:
+			print '{0} : {1}'.format(k, link[k])
+		#print bmgr.ComputeFlow(0x4019b4, func_addr[1])
+		#print bmgr.ComputeBranchProcess(func_addr)
+
 	else:
 		o_hex.mips()

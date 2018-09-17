@@ -49,6 +49,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -66,6 +71,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 	
@@ -85,6 +95,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr3.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -104,6 +119,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr3.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -121,6 +141,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -138,6 +163,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -155,6 +185,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -172,6 +207,11 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += self.next_result
 			line += '\n        '
 		line += 'goto ' + self.opr2.value + ';\n    ' + '}'
+		if self.next_result is not None:
+			line += '\n    '
+			line += self.next_result
+
+		o_reg = copy.deepcopy(self.branch_reg)
 
 		return line, self.next_addr
 
