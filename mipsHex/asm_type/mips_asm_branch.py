@@ -8,14 +8,12 @@ from mips_asm import *
 
 import idc
 
-import copy			# for deepcopy
-
 # instruction(conditional branch)
 class MIPS_Asm_Branch(MIPS_Asm):
 	def __init__(self, addr, dispatch, o_reg, o_func):
 		super(MIPS_Asm_Branch, self).__init__(addr)
 
-		self.branch_reg = copy.deepcopy(o_reg)
+		self.branch_reg = o_reg.copy()
 		self.next_addr = idc.NextHead(addr)
 		self.next_result, n_addr = dispatch(self.next_addr, self.branch_reg, o_func)
 		# check_assert("[-] address({0}), dispatch error in branch".format(hex(self.next_addr)), result is None)
@@ -25,7 +23,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_b(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != b".format(hex(self.addr), self.ins), self.ins == 'b')
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 		line = ''
 		if self.next_result is not None:
 			line = self.next_result
@@ -33,7 +31,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 		line += o_func.get_comment(prefix='[branch]', opr1=self.opr1.value) + '\n    '
 		line += 'goto ' + self.opr1.value + ';'
 
-		return line, self.next_addr#idc.PrevHead(idc.LocByName(self.opr1.value))
+		return line, self.next_addr
 
 	# branch equal zero instruction
 	def do_beqz(self, o_reg, o_func):
@@ -53,7 +51,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -75,7 +73,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 	
@@ -99,7 +97,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -123,7 +121,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -145,7 +143,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -167,7 +165,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -189,7 +187,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -211,7 +209,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 			line += '\n    '
 			line += self.next_result
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 
 		return line, self.next_addr
 
@@ -219,7 +217,7 @@ class MIPS_Asm_Branch(MIPS_Asm):
 	def do_bal(self, o_reg, o_func):
 		check_assert("[-] Check ins, current({0}) : {1} != bal".format(hex(self.addr), self.ins), self.ins == 'bal')
 
-		o_reg = copy.deepcopy(self.branch_reg)
+		o_reg.copy(self.branch_reg)
 		line = ''
 		if self.next_result is not None:
 			line = self.next_result

@@ -7,7 +7,6 @@ import idautils
 import idc
 
 from Queue import Queue
-import copy
 
 class BranchManager:
 	def __init__(self, arc):
@@ -335,7 +334,8 @@ class BranchManager:
 						print computed_flow
 						error("[-] Need to remake flow way")
 			else:
-				error("[-] It is not sorted flow way")
+				# error("[-] It is not sorted flow way")
+				pass
 
 		return computed
 
@@ -381,13 +381,13 @@ class BranchManager:
 	##############################
 	def GetRegStatus(self, addr):
 		if hex(addr).replace('L', '') in self.register_status.keys():
-			return self.register_status[hex(addr).replace('L', '')]
+			return self.register_status[hex(addr).replace('L', '')].copy()
 
 		return None
 
 	def InsertRegStatus(self, addr, o_reg):
 		# addr is not stored on o_reg object
-		self.register_status[hex(addr).replace('L', '')] = copy.deepcopy(o_reg)
+		self.register_status[hex(addr).replace('L', '')] = o_reg.copy()
 
 	def ClearRegStatus(self):
 		for key in self.register_status.keys():

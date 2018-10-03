@@ -1,6 +1,15 @@
 # Patch Note
 
 
+ver 0.12
+
+- MIPS_Register object is added the copy method
+
+- change method : deepcopy(copy module) => copy(MIPS_Register)
+
+- fix bugs
+
+
 ver 0.11
 
 - change to follow branch

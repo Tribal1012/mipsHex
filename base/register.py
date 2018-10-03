@@ -17,7 +17,15 @@ class Register(object):
 		pass
 
 	@abstractmethod
+	def has_register(self, register):
+		pass
+
+	@abstractmethod
 	def set_register(self, register, value):
+		pass
+
+	@abstractmethod
+	def copy(self, o_reg=None):
 		pass
 
 	@abstractmethod

@@ -115,7 +115,10 @@ class MIPS_Asm_Arithmetic(MIPS_Asm):
 					if idc.LocByName(reg_val) != 0xffffffff:
 						o_reg.set_register(self.opr1.value, hex(idc.LocByName(reg_val) + int(cvt_opr3, 16)))
 					elif asmutils.isImmediate(reg_val, cvt_opr3):
-						o_reg.set_register(self.opr1.value, '"' + idc.GetString(int(reg_val, 16) + int(cvt_opr3, 16)) + '"')
+						offset_addr = idc.GetString(int(reg_val, 16) + int(cvt_opr3, 16))
+						if offset_addr == None:
+							offset_addr = 'offset_' + ('%X' % (int(reg_val, 16) + int(cvt_opr3, 16)))
+						o_reg.set_register(self.opr1.value, '"' + offset_addr + '"')
 					else:
 						o_reg.set_register(self.opr1.value, '(' + reg_val + ' + ' + cvt_opr3 + ')')
 

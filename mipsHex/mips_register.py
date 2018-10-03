@@ -58,6 +58,41 @@ class MIPS_Register(br.Register):
 				if key == register:
 					line[key] = value
 
+	def copy(self, o_reg=None):
+		if o_reg:
+			if not hasattr(o_reg, 'register_list'):
+				return None
+
+			for key in self.mips_value_register.keys():
+				self.mips_value_register[key] = o_reg.mips_value_register[key]
+
+			for key in self.mips_argument_register.keys():
+				self.mips_argument_register[key] = o_reg.mips_argument_register[key]
+
+			for key in self.mips_temp_register.keys():
+				self.mips_temp_register[key] = o_reg.mips_temp_register[key]
+
+			for key in self.mips_saved_register.keys():
+				self.mips_saved_register[key] = o_reg.mips_saved_register[key]
+
+			for key in self.mips_stack_register.keys():
+				self.mips_stack_register[key] = o_reg.mips_stack_register[key]
+
+			for key in self.mips_special_register.keys():
+				self.mips_special_register[key] = o_reg.mips_special_register[key]
+
+			for key in self.mips_accumulator.keys():
+				self.mips_accumulator[key] = o_reg.mips_accumulator[key]
+
+			return self
+
+		# Copy itself
+		else:
+			o_reg = MIPS_Register()
+			o_reg.copy(self)
+
+			return o_reg
+
 	def get_func_arg(self, count=None):
 		arguments = list()
 		for value in self.mips_argument_register.values():
